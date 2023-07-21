@@ -8,7 +8,7 @@ export default {
             {
                 path: '/',
                 name: 'home',
-                label: '首页',
+                label: '我的主页',
                 icon: 's-home',
                 url: 'Home/Home'
             },
@@ -53,7 +53,7 @@ export default {
                         {
                             path: '/home',
                             name: 'home',
-                            label: '首页',
+                            label: '我的主页',
                             icon: 's-home',
                             url: 'Home.vue'
                         },

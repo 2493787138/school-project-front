@@ -50,6 +50,8 @@ export default {
             //console.log('执行登出')
             jsCookie.remove('token')
             jsCookie.remove('menu')
+            this.$store.state.tab.user=''
+            console.log(this.$store.state.tab.user,'loginout')
         },
 
         handleMenu() {

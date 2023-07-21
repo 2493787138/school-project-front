@@ -6,7 +6,7 @@
                 style="align-items: center;">
                 <h3 class="login_title">系统登录</h3>
                 <el-form-item prop="username" label="用户名:">
-                    <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
+                    <el-input  v-model="form.username" placeholder="请输入用户名" ></el-input>
                 </el-form-item>
                 <el-form-item prop="password" label="密码:" inline>
                     <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
@@ -14,7 +14,7 @@
                 <div></div>
                 <el-form-item>
                     <el-button type="primary" @click="submit" class="button">登录</el-button>
-                    <el-button type="primary" @click="submit" class="button">注册</el-button>
+                    <el-button type="primary" @click="forceUpdate()" class="button">注册</el-button>
                     <br><br>
                     <a>忘记密码？</a>
 
@@ -45,7 +45,12 @@ export default {
             }
         }
     },
+    mounted(){
+
+    },
+
     methods: {
+        
         submit() {
             //token信息
             //const token= Mock.Random.guid()
@@ -61,9 +66,17 @@ export default {
                             console.log(data[0])
                             Cookie.set('token', JSON.stringify(data[0]))
                             this.$message.success("登录成功");
-                            //获取该权限的菜单数据存到store中        
+                            //获取该权限的菜单数据存到store中
+                            this.$store.state.tab.user=data[0]        
                             this.$store.commit('setMenu')
                             this.$store.commit('addMenu', this.$router)
+                            this.form={
+                                username:'',
+                                password:'',
+                            }
+                            
+                            this.$refs.form.resetFields();
+                            console.log(this.form)
                             this.$router.push('/home')
                         }
                         else {

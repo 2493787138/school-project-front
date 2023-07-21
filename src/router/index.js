@@ -13,6 +13,7 @@ import Register from '../views/register.vue'
 import ForgetPassword from '../views/ForgetPassword.vue'
 Vue.use(VueRouter)
 
+
 //将路由与组件映射
 const routes = [
     {
