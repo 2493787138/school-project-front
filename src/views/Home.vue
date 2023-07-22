@@ -24,8 +24,9 @@
                     <el-card v-for="(item) in countData" :key="item.name" :body-style="{ display: 'flex', padding: 0 }">
                         <i :class="`el-icon-${item.icon}`" :style="{ background: item.color }"></i>
                         <div class="detail">
-                            <p class="price">￥{{ item.value }}</p>
-                            <p class="desc">{{ item.name }}</p>
+            
+                            <span class="desc">{{ item.name }}:</span>
+                            <span class="price">{{ item.value }}</span>
                         </div>
                     </el-card>
                 </div>
@@ -33,14 +34,21 @@
             </el-col>
         </el-row>
         <!-- 用户为作者时 -->
-        <div v-if=false>
+        <div v-if=false class="bottombox">
 
         </div>
         <!-- 用户为管理员时 -->
-        <div>
-            <user_category></user_category>
-            <user_sex></user_sex>
-            <user_age></user_age>
+        <div class="bottombox">
+            <el-card>
+               <user_category></user_category> 
+            </el-card>
+            <el-card>
+                <user_sex></user_sex>
+            </el-card>
+            <el-card>
+                <user_age></user_age>
+            </el-card>
+            
         </div>
     </div>
 </template>
@@ -56,6 +64,32 @@ export default {
     },
     data() {
         return {
+            countData: [
+                {
+                    name: '用户总数',
+                    value: 100,
+                    icon: 'user',
+                    color: '#2ec7c9'
+                },
+                {
+                    name: '管理员总数',
+                    value: 100,
+                    icon: 'user-solid',
+                    color: 'lightblue'
+                },
+                {
+                    name: '用户作品总数',
+                    value: 100,
+                    icon: 'folder',
+                    color: '#2ec7c9'
+                },
+                {
+                    name: '功能模块数',
+                    value: 3,
+                    icon: 's-opportunity',
+                    color: 'lightblue'
+                },
+            ]
 
         }
     },
@@ -73,25 +107,20 @@ export default {
 
     },
     mounted() {
-        console.log(this.$store.state.tab.user, 'user')
-        //获取mock中的数据
-
-
-
-
-
-
 
     }
 }
 </script>
 <style lang="less" scoped>
 .user-card {
+    margin-right: 15px;
 
     .user {
+        
         display: flex; //标签可以同一行显示
         align-items: center; //内容垂直居中
         padding-bottom: 20px;
+
 
         img {
             width: 120px;
@@ -138,48 +167,59 @@ export default {
 
 
 .num {
+    margin-right: 15px;
 
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 
     .el-card {
-        width: 32%;
+        width: 49%;
         margin-bottom: 15px;
         padding: 0;
 
     }
 
     i {
-        width: 70px;
-        height: 70px;
+        width:124px;
+        height: 124px;
         font-size: 30px;
         text-align: center;
-        line-height: 80px;
+        line-height: 124px;
         color: white;
     }
 
     .detail {
         display: flex;
         flex-direction: column;
-        justify-content: center;
         margin-left: 15px;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
 
         .price {
             font-size: 28px;
-            margin-bottom: 10px;
+            
             height: 28px;
             line-height: 28px;
+            width:50%
 
         }
-
         .desc {
-            font-size: 14px;
+            margin-left: 5%;
+            width: 45%;
+            font-size: 23px;
             color: #999999;
-            text-align: center;
+            text-align: left;
 
         }
     }
 
+}
+.bottombox{
+    display: flex;
+    .el-card{
+        margin-right: 15px;
+    }
 }
 </style>

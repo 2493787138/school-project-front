@@ -21,9 +21,7 @@
                     <el-date-picker v-model="form.birth" type="date" placeholder="选择日期" value-format="yyyy-MM-DD">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="地址" prop="addr">
-                    <el-input placeholder="请输入地址" v-model="form.addr"></el-input>
-                </el-form-item>
+                
 
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -39,7 +37,7 @@
             <!-- 搜索 -->
             <el-form :model="userform" inline>
                 <el-form-item>
-                    <el-input placeholder="请输入名称" v-model="userform.name"></el-input>
+                    <el-input placeholder="请输入用户姓名" v-model="userform.name"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="getList">查询</el-button>
@@ -63,8 +61,6 @@
                 </el-table-column>
                 <el-table-column prop="birth" label="出生日期">
                 </el-table-column>
-                <el-table-column prop="addr" label="地址">
-                </el-table-column>
                 <el-table-column prop="" label="操作">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
@@ -87,11 +83,11 @@ export default {
         return {
             dialogVisible: false,
             form: {
-                name: 1,
+                name: '',
                 age: '',
                 birth: '',
                 sex: '',
-                addr: ''
+                password:'',
             },
             rules: {
                 name: [
@@ -118,12 +114,15 @@ export default {
                         message: '请选择出生日期'
                     }
                 ],
-                addr: [
+                password: [
                     {
+                        
                         required: true,
-                        message: '请填写地址'
+                        message: '请输入密码'
                     }
                 ],
+                
+                
 
             },
             tableData: [''],

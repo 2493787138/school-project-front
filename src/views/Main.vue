@@ -55,7 +55,7 @@ export default{
 }
 .el-main{
     padding: 0;
-    margin: 0;
+    margin-left: 20px;
 }
 </style>
 

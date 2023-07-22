@@ -23,7 +23,7 @@
 </template>
 <style lang="less" scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
+  width: 250px;
   min-height: 400px;
   padding: 0;
   margin: 0;

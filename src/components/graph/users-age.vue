@@ -50,9 +50,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.graph {
+ .graph {
 
-    height: 500px;
-    width: 800px;
+height: 455px;
+width: 455px;
 }
 </style>

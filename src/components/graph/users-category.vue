@@ -59,9 +59,9 @@ export default {
   mounted() {
     option.series[0].data=[
       
-        { value: this.usersCategory.active, name: '活跃用户' },
-        { value: this.usersCategory.normal, name: '一般用户' },
-        { value: this.usersCategory.die, name: '流失用户' },
+        { value: this.usersCategory.active, name: '活跃用户' ,itemStyle:{color:'lightgreen'}},
+        { value: this.usersCategory.normal, name: '一般用户' ,itemStyle:{color:'rgb(231, 219, 54)'}},
+        { value: this.usersCategory.die, name: '流失用户' ,itemStyle:{color:'grey'}},
       ]
     chartDom = this.$refs.graph;
     myChart = echarts.init(chartDom);
@@ -72,8 +72,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.graph {
-  height: 500px;
-  width: 800px;
+ .graph {
+//color: rgb(231, 219, 54);
+height: 455px;
+width: 455px;
 }
 </style>

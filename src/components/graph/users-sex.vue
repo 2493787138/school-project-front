@@ -68,9 +68,9 @@
   }
   </script>
   <style lang="less" scoped>
-  .graph {
-    
-    height: 500px;
-    width: 800px;
-  }
+ .graph {
+
+height: 455px;
+width: 455px;
+}
   </style>

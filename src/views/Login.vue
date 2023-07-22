@@ -14,7 +14,7 @@
                 <div></div>
                 <el-form-item>
                     <el-button type="primary" @click="submit" class="button">登录</el-button>
-                    <el-button type="primary" @click="forceUpdate()" class="button">注册</el-button>
+                    <el-button type="primary" @click="" class="button">注册</el-button>
                     <br><br>
                     <a>忘记密码？</a>
 
