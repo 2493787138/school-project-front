@@ -12,6 +12,7 @@ export const getUser = (params) =>{
 
 export const addUser = (data) =>{
     return http.post('/user/add',data)
+    
 }
 
 export const editUser = (data) =>{
@@ -26,8 +27,6 @@ export const login = (data) =>{
     return http.post('/login/login',data)
 }
 
-
-
 export const test = (data) =>{
     return http.get('/user',data)
 }
@@ -35,3 +34,7 @@ export const test2 = (data) =>{
     return http.post('/user',data)
 }
 
+//chx
+
+
+//
