@@ -5,6 +5,8 @@
 </template>
 <script>
 import * as echarts from 'echarts'
+import { getUserAge } from '@/api'
+
 var that
 var chartDom
 var myChart
@@ -33,17 +35,23 @@ export default {
     data() {
         return {
             userAge:[
-                9,25,20,12,12,3
+                
             ]
 
         }
 
     },
     mounted() {
-        option.series[0].data = this.userAge
-        chartDom = this.$refs.graph;
-        myChart = echarts.init(chartDom);
-        myChart.setOption(option);
+        getUserAge().then((data) => {
+            this.userAge=data.data
+            option.series[0].data = this.userAge
+            chartDom = this.$refs.graph;
+            myChart = echarts.init(chartDom);
+            myChart.setOption(option);
+        })
+        
+        
+        
 
     }
 

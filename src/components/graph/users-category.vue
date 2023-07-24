@@ -5,14 +5,15 @@
 </template>
 <script>
 import * as echarts from 'echarts'
+import { getUserCategory } from '@/api'
 var that
 var chartDom
 var myChart
 var option = {
   title: {
-        text: '用户质量分析',  // 主标题名称
-        left:'center'
-    },
+    text: '用户质量分析',  // 主标题名称
+    left: 'center'
+  },
   tooltip: {
     trigger: 'item'
   },
@@ -27,9 +28,9 @@ var option = {
       name: 'Access From',
       type: 'pie',
       radius: ['40%', '70%'],
-      
+
       // adjust the start angle
-      
+
       label: {
         show: true,
         formatter(param) {
@@ -37,7 +38,7 @@ var option = {
           return param.name + ' (' + param.percent * 2 + '%)';
         }
       },
-      data: [  
+      data: [
       ]
     }
   ]
@@ -46,35 +47,36 @@ var option = {
 export default {
   data() {
     return {
-      usersCategory:{
-        active:10,
-        normal:25,
-        die:50
-        
+      usersCategory: {
+
       }
 
     }
 
   },
   mounted() {
-    option.series[0].data=[
-      
-        { value: this.usersCategory.active, name: '活跃用户' ,itemStyle:{color:'lightgreen'}},
-        { value: this.usersCategory.normal, name: '一般用户' ,itemStyle:{color:'rgb(231, 219, 54)'}},
-        { value: this.usersCategory.die, name: '流失用户' ,itemStyle:{color:'grey'}},
+    getUserCategory().then((data) => {
+      this.usersCategory=data.data
+      option.series[0].data = [
+
+        { value: this.usersCategory.active, name: '活跃用户', itemStyle: { color: 'lightgreen' } },
+        { value: this.usersCategory.normal, name: '一般用户', itemStyle: { color: 'rgb(231, 219, 54)' } },
+        { value: this.usersCategory.die, name: '流失用户', itemStyle: { color: 'grey' } },
       ]
-    chartDom = this.$refs.graph;
-    myChart = echarts.init(chartDom);
-    myChart.setOption(option);
-    
+      chartDom = this.$refs.graph;
+      myChart = echarts.init(chartDom);
+      myChart.setOption(option);
+    })
+
+
   }
 
 }
 </script>
 <style lang="less" scoped>
- .graph {
-//color: rgb(231, 219, 54);
-height: 455px;
-width: 455px;
+.graph {
+  //color: rgb(231, 219, 54);
+  height: 455px;
+  width: 455px;
 }
 </style>

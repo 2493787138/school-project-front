@@ -43,6 +43,11 @@ export default {
             state.tabsList.splice(index, 1)
 
         },
+        //防止刷新时vuex数据丢失
+        refreshUser(state){
+            state.user=JSON.parse(jsCookie.get('token'))
+
+        },
 
         //设置menu的数据
         setMenu(state, val) {
@@ -53,16 +58,9 @@ export default {
                         {
                             path: '/home',
                             name: 'home',
-                            label: '我的主页',
+                            label: '系统数据',
                             icon: 's-home',
                             url: 'Home.vue'
-                        },
-                        {
-                            path: '/mall',
-                            name: 'mall',
-                            label: '商品管理',
-                            icon: 'video-play',
-                            url: 'Mall.vue'
                         },
                         {
                             path: '/user',
@@ -72,25 +70,13 @@ export default {
                             url: 'User.vue'
                         },
                         {
-                            label: '其他',
-                            icon: 'location',
-                            children: [
-                                {
-                                    path: '/page1',
-                                    name: 'page1',
-                                    label: '页面1',
-                                    icon: 'setting',
-                                    url: 'PageOne.vue'
-                                },
-                                {
-                                    path: '/page2',
-                                    name: 'page2',
-                                    label: '页面2',
-                                    icon: 'setting',
-                                    url: 'PageTwo.vue'
-                                }
-                            ]
-                        }
+                            path: '/opinion-collection',
+                            name: 'opinion-collection',
+                            label: '意见收集',
+                            icon: 'message',
+                            url: 'Option-collection.vue'
+                        },
+                        
                     ]
                     break;
                 case 1:
@@ -98,17 +84,38 @@ export default {
                         {
                           path: '/home',
                           name: 'home',
-                          label: '首页',
+                          label: '我的主页',
                           icon: 's-home',
                           url: 'Home.vue'
                         },
                         {
-                          path: '/video',
-                          name: 'video',
-                          label: '商品管理',
-                          icon: 'video-play',
-                          url: 'Mall.vue'
-                        }
+                            label: '作品管理',
+                            icon: 'folder-opened',
+                            children: [
+                              {
+                                path: '/myArticle',
+                                name: 'myArticle',
+                                label: '我的作品',
+                                icon: 'document',
+                                url: 'MyArticle.vue'
+                              },
+                              {
+                                path: '/ralationship',
+                                name: 'relationship',
+                                label: '人物关系图',
+                                icon: 'setting',
+                                url: 'Relationship.vue'
+                              },
+                              {
+                                path: '/timeline',
+                                name: 'timeline',
+                                label: '故事时间线',
+                                icon: 'setting',
+                                url: 'Timeline.vue',
+                              }
+                            ]
+                          }
+                        
                       ]
                       break
             }

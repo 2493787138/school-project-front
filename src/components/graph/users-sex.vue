@@ -5,6 +5,7 @@
   </template>
   <script>
   import * as echarts from 'echarts'
+  import { getUserSex } from '@/api'
   var that
   var chartDom
   var myChart
@@ -44,25 +45,23 @@
     data() {
       return {
         usersSex:{
-          male:88,
-          female:65
-          
         }
   
       }
   
     },
     mounted() {
-      option.series[0].data=[
+      getUserSex().then((data) => {
         
+        this.usersSex=data.data
+        option.series[0].data=[
           { value: this.usersSex.female, name: '女性用户' ,itemStyle:{color:'hotpink'}},
           { value: this.usersSex.male, name: '男性用户' },
-          
         ]
       chartDom = this.$refs.graph;
       myChart = echarts.init(chartDom);
       myChart.setOption(option);
-      
+      })
     }
   
   }

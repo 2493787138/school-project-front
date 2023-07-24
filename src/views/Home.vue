@@ -1,6 +1,47 @@
 <template>
     <div>
-        <el-row>
+
+        <!-- 用户为作者时 -->
+        <el-container v-if="$store.state.tab.user.role == 1" class="container">
+            <!-- 名片框 -->
+            <el-col :span="8">
+                <el-card class="user-card">
+                    <div class="user">
+                        <img src="../assets/picture/头像.jpg" alt="图片显示失败">
+                        <div class="user-info">
+                            <p class="name">{{ $store.state.tab.user.username }}</p>
+                            <p class="access">{{ role }}</p>
+
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="login-info">
+                        <p>上次登录时间: <span>2023/6/11</span></p>
+                        <p>性别：<span>{{ $store.state.tab.user.sex }}</span></p>
+                        <p>出生日期：<span>{{ $store.state.tab.user.birth }}</span></p>
+                        <p>作品数：</p>
+                        <el-button type="primary" class="button">
+                            编辑资料
+                        </el-button>
+                        <br><br>
+                        <el-button type="primary" class="button">
+                            修改密码
+                        </el-button>
+                    </div>
+                </el-card>
+                <el-card class="note">
+                    
+                </el-card>
+            </el-col>
+            <el-col :span="16">
+                <el-card class="graph">
+                    <rada_capacity></rada_capacity>
+                </el-card>
+            </el-col>
+        </el-container>
+
+        <!-- 用户为管理员时 -->
+        <el-row v-if="$store.state.tab.user.role == 0">
             <el-col :span="8">
                 <el-card class="user-card">
                     <div class="user">
@@ -24,23 +65,18 @@
                     <el-card v-for="(item) in countData" :key="item.name" :body-style="{ display: 'flex', padding: 0 }">
                         <i :class="`el-icon-${item.icon}`" :style="{ background: item.color }"></i>
                         <div class="detail">
-            
+
                             <span class="desc">{{ item.name }}:</span>
                             <span class="price">{{ item.value }}</span>
                         </div>
                     </el-card>
                 </div>
-
             </el-col>
         </el-row>
-        <!-- 用户为作者时 -->
-        <div v-if=false class="bottombox">
+        <div class="bottombox" v-if="$store.state.tab.user.role == 0">
 
-        </div>
-        <!-- 用户为管理员时 -->
-        <div class="bottombox">
             <el-card>
-               <user_category></user_category> 
+                <user_category></user_category>
             </el-card>
             <el-card>
                 <user_sex></user_sex>
@@ -48,7 +84,7 @@
             <el-card>
                 <user_age></user_age>
             </el-card>
-            
+
         </div>
     </div>
 </template>
@@ -56,14 +92,17 @@
 import user_sex from '../components/graph/users-category.vue'
 import user_category from '../components/graph/users-sex.vue'
 import user_age from '../components/graph/users-age.vue'
+import rada_capacity from '../components/graph/rada-capacity.vue'
 export default {
     components: {
         user_category,
         user_sex,
-        user_age
+        user_age,
+        rada_capacity,
     },
     data() {
         return {
+
             countData: [
                 {
                     name: '用户总数',
@@ -107,16 +146,34 @@ export default {
 
     },
     mounted() {
+        this.$store.commit('refreshUser')
 
     }
 }
 </script>
 <style lang="less" scoped>
+.container {
+    height: 100%;
+    width: 100%;
+
+    .graph{
+        width: 98%;
+        height: 790px;
+    }
+    .note{
+        margin-top: 15px;
+        margin-right: 15px;
+        width: 96%;
+        height: 345px;
+
+    }
+}
+
 .user-card {
     margin-right: 15px;
 
     .user {
-        
+
         display: flex; //标签可以同一行显示
         align-items: center; //内容垂直居中
         padding-bottom: 20px;
@@ -159,6 +216,10 @@ export default {
 
             }
         }
+        .button{
+            width:100%;
+
+        }
     }
 }
 
@@ -181,7 +242,7 @@ export default {
     }
 
     i {
-        width:124px;
+        width: 124px;
         height: 124px;
         font-size: 30px;
         text-align: center;
@@ -199,12 +260,12 @@ export default {
 
         .price {
             font-size: 28px;
-            
+
             height: 28px;
             line-height: 28px;
-            width:50%
-
+            width: 50%
         }
+
         .desc {
             margin-left: 5%;
             width: 45%;
@@ -216,9 +277,11 @@ export default {
     }
 
 }
-.bottombox{
+
+.bottombox {
     display: flex;
-    .el-card{
+
+    .el-card {
         margin-right: 15px;
     }
 }
