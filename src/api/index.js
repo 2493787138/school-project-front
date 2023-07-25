@@ -1,4 +1,10 @@
 import http from "@/utils/request";
+import { data } from "jquery";
+
+//login
+export const login = (data) =>{
+    return http.post('/login/login',data)
+}
 
 //managerHome
 export const getUserAge = () =>{
@@ -27,11 +33,11 @@ export const addUser = (data) =>{
 }
 
 export const editUser = (data) =>{
-    return http.post('/user/edit',data)
+    return http.patch('/user/edit',data)
 }
 
 export const delUser = (data) =>{
-    return http.post('/user/del',data)
+    return http.delete('/user/del',data)
 }
 
 //myArticle
@@ -39,9 +45,9 @@ export const getLabels =()=>{
     return http.get('/myArticle/getLabels')
 }
 
-//login
-export const login = (data) =>{
-    return http.post('/login/login',data)
+//Timeline
+export const saveTimeline = (data) =>{
+    return http.post('/timeline/save',data)
 }
 
 

@@ -14,8 +14,8 @@ Mock.mock('/api/managerHome/getManageData','get',ManagerHomeApi.getManageData)
 Mock.mock('/api/myArticle/getLabels','get',myArticleApi.getLabels)
 
 Mock.mock('/api/user/add','post',userApi.createUser)
-Mock.mock('/api/user/edit','post',userApi.updateUser)
-Mock.mock('/api/user/del','post',userApi.deleteUser)
+Mock.mock('/api/user/edit','patch',userApi.updateUser)
+Mock.mock('/api/user/del','delete',userApi.deleteUser)
 Mock.mock(/api\/user\/getUser/,'get',userApi.getUserList)
 //Mock.mock('/api/user/',userApi.batchremove)
 

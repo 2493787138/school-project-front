@@ -2804,6 +2804,11 @@
   "resolved" "https://registry.npmmirror.com/detect-node/-/detect-node-2.1.0.tgz"
   "version" "2.1.0"
 
+"dhtmlx-gantt@^8.0.3":
+  "integrity" "sha512-LN/stEtQi13SMEXujk6RLw24fWOXjB6bFQmU7yzRQcLGgsrxcPwNCcGEG194bkbACq6DQ/NsY6c419VMiEWX/w=="
+  "resolved" "https://registry.npmjs.org/dhtmlx-gantt/-/dhtmlx-gantt-8.0.3.tgz"
+  "version" "8.0.3"
+
 "dir-glob@^3.0.1":
   "integrity" "sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA=="
   "resolved" "https://registry.npmmirror.com/dir-glob/-/dir-glob-3.0.1.tgz"
