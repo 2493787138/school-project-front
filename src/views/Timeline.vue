@@ -101,8 +101,8 @@
         article:'',
         tasks: {
           data: [
-            { id: 1, text: 'Task #1', start_date: '15-04-2023',  duration: 3, color: 'blue'},
-            { id: 2, text: 'Task #2', start_date: '29-04-2023',  duration: 3,  color: 'blue'},
+            { id: 1, text: 'Task #1', start_date: '15-04-2023',  duration: 3, color: ''},
+            { id: 2, text: 'Task #2', start_date: '29-04-2023',  duration: 3,  color: ''},
             { id: 3, text: 'Task #2-1', start_date: '20-04-2023', duration: 3, parent: 1,color: 'black' }
           ],
           links: [
@@ -132,9 +132,13 @@
                 color:item.color,
                 parent:item.parent
             }
-
         })
-        saveTimeline(tasks).then(()=>{
+        const data={
+            tasks:tasks,
+            links:this.tasks.links
+        }
+        console.log(data)
+        saveTimeline(data).then(()=>{
 
         })
 
