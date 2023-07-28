@@ -1,10 +1,11 @@
 import http from "@/utils/request";
-import { data } from "jquery";
 
-//login
-export const login = (data) =>{
-    return http.post('/login/login',data)
+//请求首页数据
+export const getData = () =>{
+    //返回promise对象
+    return http.get('home/getData')
 }
+<<<<<<< HEAD
 // 假设后端接口中的 gender 参数是字符串类型
 export function register(registerForm) {
     return request({
@@ -37,32 +38,48 @@ export const getManageData = () =>{
 }
 
 //User
+=======
+>>>>>>> b712c9c838bb8205f759125c376d18f171ff03b5
 export const getUser = (params) =>{
-    return http.get('/user\/getUser/',params)
+    //console.log(params,'params')
+    return http.get('/api\/user\/getUser/',params)
 }
 
 export const addUser = (data) =>{
     return http.post('/user/add',data)
+    
 }
 
 export const editUser = (data) =>{
-    return http.patch('/user/edit',data)
+    return http.post('/user/edit',data)
 }
 
 export const delUser = (data) =>{
-    return http.delete('/user/del',data)
+    return http.post('/user/del',data)
 }
 
-//myArticle
-export const getLabels =()=>{
-    return http.get('/myArticle/getLabels')
+export const login = (data) =>{
+    return http.post('/login/login',data)
 }
-
-//Timeline
-export const saveTimeline = (data) =>{
-    return http.post('/timeline/save',data)
+// 假设后端接口中的 gender 参数是字符串类型
+export function register(registerForm) {
+    return request({
+        url: '/register',
+        method: 'post',
+        data: {
+            username: registerForm.username,
+            password: registerForm.password,
+            age: registerForm.age,
+            gender: String(registerForm.gender) // 将性别从数字转换为字符串
+        }
+    })
 }
-
+export const test = (data) =>{
+    return http.get('/user',data)
+}
+export const test2 = (data) =>{
+    return http.post('/user',data)
+}
 
 //chx
 
