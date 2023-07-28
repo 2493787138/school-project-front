@@ -6,6 +6,20 @@ export const login = (data) =>{
     return http.post('/login/login',data)
 }
 
+// 假设后端接口中的 gender 参数是字符串类型
+export function register(registerForm) {
+    return request({
+        url: '/login/register',
+        method: 'post',
+        data: {
+            username: registerForm.username,
+            password: registerForm.password,
+            age: registerForm.age,
+            gender: String(registerForm.gender) // 将性别从数字转换为字符串
+        }
+    })
+}
+
 //managerHome
 export const getUserAge = () =>{
     return http.get('/managerHome/getUserAge')
