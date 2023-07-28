@@ -127,8 +127,17 @@ export default {
     border-color: #eaeaea;
     margin-top: 0px;
     margin-bottom: 0px;
+<<<<<<< HEAD
     margin-left: 600px;
     margin-right: 100px;
+=======
+<<<<<<< HEAD
+    margin-left: 600px;
+    margin-right: 100px;
+=======
+    margin-left: 800px;
+>>>>>>> b712c9c838bb8205f759125c376d18f171ff03b5
+>>>>>>> c7e8ffd0e4a314897e02d6ac7d9c07fc802841bf
     padding-left: 35px;
     padding-right: 40px;
     padding-top: 35px;
