@@ -1,6 +1,7 @@
 import Mock from 'mockjs'
 export default {
-    save:()=>{
-        
+    save:(data)=>{
+        console.log(data,'saveData')
+        return true
     }
 }
