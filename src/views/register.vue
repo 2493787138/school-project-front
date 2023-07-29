@@ -69,7 +69,7 @@ export default {
           {required: true, message: '请输入密码', trigger: 'blur'}
         ],
         birthdate: [
-          {required: true,  trigger: 'blur'}
+          {required: true,  message: '请选择出生日期',trigger: 'blur'}
         ],
         gender: [
           {required: true,  trigger: 'blur'}
@@ -104,53 +104,53 @@ export default {
 <style lang="less" scoped>
 .container {
   background-color: #dfeffa;
-  height: 100%;
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
 
   .title-img {
-    img {
-      width: 450px;
-      height: auto;
-      margin-left: 200px;
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
+    width: 450px;
+    height: auto;
+    margin-left: 200px;
+    margin-top: 0px;
+    margin-bottom: 0px;
   }
 
   .left-side-img {
-    margin-top: 0px;
+    position: absolute;
+    top: 32%;
+    transform: translateY(-50%);
     width: 50px;
-    height: 45px;
-  }
-
-  .title {
-    font-family: 'SimSun', sans-serif;
+    height: 35%;
   }
 
   .register_title {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     color: #505458;
   }
 
   .registerform {
-    width: 32%;
-    height: 35%;
+    position: absolute;
+    top: 53%;
+    left: 82%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 65%;
     border: solid 1px;
     border-color: #eaeaea;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 800px;
     padding-left: 35px;
     padding-right: 40px;
-    padding-top: 20px;
-    padding-bottom: 5px;
-    background-color: #fff;
+    padding-top: 35px;
+    padding-bottom: 15px;
     border-radius: 15px;
     box-shadow: 0 0 25px #cac6c6;
     box-sizing: border-box;
     text-align: center;
     align-items: center;
+    background-color: #fff; /* 将背景颜色修改为 #c28e8e */
 
   }
 
