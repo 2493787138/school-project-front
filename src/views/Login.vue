@@ -101,39 +101,34 @@ export default {
 <style lang="less" scoped>
 .container {
   background-color: #dfeffa;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 
   .title-img {
+    img {
       width: 450px;
       height: auto;
       margin-left: 200px;
-      margin-top: 0px;
-      margin-bottom: 0px;
-
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
   }
 
   .left-side-img {
-    position: absolute;
-    top: 32%;
-    transform: translateY(-50%);
+    margin-top: 0px;
     width: 50px;
-    height: 35%;
-
+    height: 45px;
   }
 
   .loginform {
-    position: absolute;
-    top: 55%;
-    left: 82%;
-    transform: translate(-50%, -50%);
-    width: 30%;
-    height: 60%;
+    width: 32%;
+    height: 35%;
     border: solid 1px;
     border-color: #eaeaea;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 600px;
+    margin-right: 100px;
     padding-left: 35px;
     padding-right: 40px;
     padding-top: 35px;
