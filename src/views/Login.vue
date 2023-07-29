@@ -104,22 +104,21 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 
   .title-img {
+    position: absolute;
+    top: 2%;
+    left:17%;
     width: 450px;
     height: auto;
-    margin-left: 200px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-
-  }
+      }
 
   .left-side-img {
     position: absolute;
-    top: 32%;
-    transform: translateY(-50%);
+    top: 13%;
+    left:2%;
     width: 50px;
     height: 35%;
 
@@ -127,9 +126,8 @@ export default {
 
   .loginform {
     position: absolute;
-    top: 55%;
-    left: 82%;
-    transform: translate(-50%, -50%);
+    top: 24%;
+    left: 67%;
     width: 30%;
     height: 60%;
     border: solid 1px;
