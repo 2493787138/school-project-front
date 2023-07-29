@@ -21,4 +21,5 @@ Mock.mock(/api\/user\/getUser/,'get',userApi.getUserList)
 //Mock.mock('/api/user/',userApi.batchremove)
 
 Mock.mock('/api/timeline/save','post',timelineApi.save)
+Mock.mock(/api\/timeline\/get/,'get',timelineApi.get)
 

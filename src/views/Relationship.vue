@@ -1,7 +1,15 @@
 <template>
     <div>
-        <el-button @click="echartsRestore">重置</el-button>
-        <div ref="graph" id="main" style="width: 100%;height: 800px;">
+        <el-select v-model="article" placeholder="请选选择作品" class="select1" :popper-append-to-body="false"
+        @change="chooseArticle" >
+        <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
+        </el-option>
+      </el-select>
+      <el-button @click="save" type="primary" class="save">添加角色</el-button>
+      <el-button @click="save" type="primary" class="save">添加关系</el-button>
+      <el-button @click="save" type="primary" class="save">保存</el-button>
+      
+        <div ref="graph" id="main" style="width: 100%;height: 550px;">
 
         </div>
     </div>
@@ -20,168 +28,63 @@ var a = {
 export default {
     data() {
         return {
-            //target: [],
-            realData: [
+            graphdata: [
                 {
-                    name: 'node01',//name必须是唯一标识
+                    name: '肖霸',//name必须是唯一标识
                     attribute: {
                         age: 15,//节点要展示的属性
                         num: 100,
                     },
-                    symbolSize: 70,//节点大小，有特殊要求的可以传，无要求可以外部统一设置
-                    category: 0,//节点分类index
-                    status: 1,//孩子展开收起的状态，前端渲染时赋值不用传
-                    parent: ''
+                    category: '主角',//节点分类index
                 },
                 {
-                    name: 'node02',
+                    name: '厚小花',//name必须是唯一标识
                     attribute: {
                         age: 15,//节点要展示的属性
                         num: 100,
                     },
-                    symbolSize: 50,
-                    category: 1,
-                    parent: 'node01'
+                    category: '主角',//节点分类index
                 },
                 {
-                    name: 'node03',
+                    name: '小莲花',
                     attribute: {
-                        age: 15,//节点要展示的属性
+                        age: 15,
                         num: 100,
                     },
-                    symbolSize: 50,
-                    category: 1,
-                    parent: 'node01'
+                    category: '同龄好友',
                 },
-                {
-                    name: 'node04',
-                    attribute: {
-                        age: 15,//节点要展示的属性
-                        num: 100,
-                    },
-                    symbolSize: 50,
-                    category: 1,
-                    parent: 'node01'
-                },
-                {
-                    name: 'node05',
-                    attribute: {
-                        age: 15,//节点要展示的属性
-                        num: 100,
-                    },
-                    symbolSize: 50,
-                    category: 1,
-                    parent: 'node01'
-                },
-                {
-                    name: '3.1',
-                    attribute: {
-                        age: 15,//节点要展示的属性
-                        num: 100,
-                    },
-                    symbolSize: 50,
-                    category: 2,
-                    parent: 'node03'
-                },
-                {
-                    name: '3.2',
-                    attribute: {
-                        age: 15,//节点要展示的属性
-                        num: 100,
-                    },
-                    symbolSize: 50,
-                    category: 2,
-                    parent: 'node03'
-                },
-                {
-                    name: '4.1',
-                    attribute: {
-                        age: 15,//节点要展示的属性
-                        num: 100,
-                    },
-                    symbolSize: 50,
-                    category: '类3',
-                    parent: 'node04'
-                },
-                {
-                    name: 'node6',
-                    attribute: {
-                        age: 15,//节点要展示的属性
-                        num: 100,
-                    },
-                    symbolSize: 50,
-                    category: 1,
-                },
-
+                
 
 
             ],
             graphcategories: [
                 {
-                    name: '类1',
-                    symbolSize: 100,//节点大小
+                    name: '主角',
+                    symbolSize: 80,//节点大小
                     itemStyle: {
-                        color: 'black',
+                        color: 'lightpink',
                     }
                 },
                 {
-                    name: '类2'
+                    name: '同龄好友',
+                    symbolSize: 60,//节点大小
+                    itemStyle: {
+                        color: 'lightgreen',
+                    }
                 },
-                {
-                    name: '类3'
-                },
-            ],
-            graphdata: [
-                {
-                    name: 'node01',//name必须是唯一标识
-                    attribute: {
-                        age: 15,//节点要展示的属性
-                        num: 100,
-                        haha: 'haha'
-                    },
-                    symbolSize: 70,//节点大小，有特殊要求的可以传，无要求可以外部统一设置
-                    category: 0,//节点分类index
-                    status: 0//孩子展开收起的状态，前端渲染时赋值,不用传
-                },
-
+                
             ],
             graphlink: [
                 {
-                    source: 'node01',//起点和终点与node中name对应
-                    target: 'node02',
-                    name: 'link01',//提示文字
+                    source: '厚小花',//起点和终点与node中name对应
+                    target: '小莲花',
+                    name: '闺蜜',//提示文字
 
                 }, {
-                    source: 'node01',
-                    target: 'node03',
-                    name: 'link02',
-                    des: 'link02des'
-                }, {
-                    source: 'node01',
-                    target: 'node04',
-                    name: 'link03',
-                    des: 'link03des'
-                }, {
-                    source: 'node01',
-                    target: 'node05',
-                    name: 'link04',
-                    des: 'link05des'
-                }, {
-                    source: 'node03',
-                    target: '3.1',
-                    name: 'link',
-                    des: ''
-                }, {
-                    source: 'node03',
-                    target: '3.2',
-                    name: 'link01',
-                    des: 'link01des'
-                }, {
-                    source: 'node04',
-                    target: '4.1',
-                    name: 'link01',
-                    des: 'link01des'
-                },
+                    source: '厚小花',
+                    target: '肖霸',
+                    name: '情侣',
+                }, 
             ]
 
         }
@@ -190,12 +93,7 @@ export default {
 
         //重置整个图到只有一个根节点
         echartsRestore() {
-            for (var i = 0; i < this.realData.length; i++) {
-                this.realData[i].status = 0
-            }
-            this.graphdata = []
-            this.graphdata.push(this.realData[0])
-            this.recreateGraph()
+
         },
 
         click(node) {
@@ -234,46 +132,7 @@ export default {
 
         },
 
-        // click(node) {
 
-        //     this.target = []
-        //     var that = this
-        //     //找到要操作的子节点的名字
-        //     this.graphlink.forEach(element => {
-        //         if (element.source === node.name) {
-        //             this.target.push(element.target)
-        //         }
-        //     });
-        //     //console.log(this.target)
-        //     if (this.target.length != 0) {
-        //         if (node.status == 1) { //现在孩子是显示的，要让他不显示
-        //             //console.log('删除')
-        //             this.graphdata = this.graphdata.filter(function (item, index, arr) {
-        //                 //var bool=true
-        //                 //console.log(that.target)
-        //                 var bool = that.target.some(function (subitem, subindex, subarr) {
-        //                     return subitem == item.name
-        //                 })
-        //                 return !bool
-        //             })
-        //             node.status = 0
-        //         }
-        //         else { //现在孩子未显示，要让他显示
-        //             //console.log('增加')
-        //             this.realData.forEach(element => {
-        //                 if (that.target.some(function (subitem, subindex, subarr) {
-        //                     return subitem == element.name
-        //                 }))
-        //                     that.graphdata.push(element)
-        //             });
-        //             node.status = 1
-        //         }
-        //         //console.log(this.graphdata, 'result')
-        //         this.recreateGraph()
-        //     }
-
-
-        // },
 
         //重画图
         recreateGraph() {
@@ -289,12 +148,7 @@ export default {
     mounted() {
         var that = this
         window.clicknode = this.click
-        for (var i = 0; i < this.realData.length; i++) {
-            this.realData[i].status = 0
-        }
-
         chartDom = this.$refs.graph;
-
         myChart = echarts.init(chartDom);
 
 
@@ -307,6 +161,7 @@ export default {
                 //console.log(option,'option')
             }
         });
+
         option = {
             // 图的标题
             title: {
@@ -321,10 +176,8 @@ export default {
                         if (params.dataType == 'node') {
 
                             let str = ''
-                            for (i in params.data.attribute) {
-                                console.log(i)
+                            for (var i in params.data.attribute) {
                                 str += `${i}：${params.data.attribute[i]}<br/>`
-
                             }
                             return str
                         }
@@ -381,7 +234,7 @@ export default {
                 },
                 force: {
                     repulsion: 2500,
-                    edgeLength: [10, 100],
+                    edgeLength: [50, 500],
                     layoutAnimation: false
                 },
                 draggable: true,

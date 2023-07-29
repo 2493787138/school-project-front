@@ -1,26 +1,29 @@
 <template>
   <div class="app-container">
-    <div ref="gantt" class="left-container"></div>
     <div>
-      <el-button @click="output">输出</el-button>
-      <el-button @click="save">保存</el-button>
-      <el-select v-model="timeScale" placeholder="请选择时间单位" class="select1" :popper-append-to-body="false"
+      <el-select v-model="article" placeholder="请选选择作品" class="select1" :popper-append-to-body="false"
+        @change="chooseArticle" >
+        <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
+        </el-option>
+      </el-select>
+      <el-select 
+        v-model="timeScale" placeholder="请选择时间单位" class="select2" :popper-append-to-body="false"
         @change="setScaleConfig(timeScale)">
         <el-option v-for="item in timeOption" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-      <el-select v-model="article" placeholder="请选选择作品" class="select1" :popper-append-to-body="false"
-        @change="chooseArticle">
-        <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
-        </el-option>
-      </el-select>
+      <el-button @click="save" type="primary" class="save">保存</el-button>
+      
+      
     </div>
+    <div ref="gantt" class="left-container"></div>
+    
   </div>
 </template>
 <script>
 import gantt from 'dhtmlx-gantt'
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
-import { saveTimeline } from '@/api/index'
+import { saveTimeline, getTimeline } from '@/api/index'
 
 var that
 gantt.plugins({
@@ -101,15 +104,8 @@ export default {
       myArticle: ['霸道总裁爱上我', '我不爱吃饭'],
       article: '',
       tasks: {
-        data: [
-          { id: 1, text: 'Task #1', start_date: '15-04-2023', duration: 3, color: '' },
-          { id: 2, text: 'Task #2', start_date: '29-04-2023', duration: 3, color: '' },
-          { id: 3, text: 'Task #2-1', start_date: '20-04-2023', duration: 3, parent: 1, color: 'black' }
-        ],
-        links: [
-          //type0尾到头，type1头到头，type2尾到尾，type3头到尾
-          { id: 1, source: 1, target: 2, type: '0' },
-        ]
+        data: [],
+        links: []
       }
     }
   },
@@ -138,17 +134,20 @@ export default {
 
     //将当前数据传给后端保存
     save() {
-      const tasks = this.tasks.data.map(item => {
-        return {
-          id: item.id,
-          title: item.text,
-          start_date: item.start_date,
-          end_date: item.end_date,
-          duration: item.duration,
-          color: item.color,
-          parent: item.parent
-        }
-      })
+      const tasks = []
+      if (this.tasks.data.length != 0) {
+        tasks = this.tasks.data.map(item => {
+          return {
+            id: item.id,
+            title: item.text,
+            start_date: item.start_date,
+            end_date: item.end_date,
+            duration: item.duration,
+            color: item.color,
+            parent: item.parent
+          }
+        })
+      }
       const data = {
         tasks: tasks,
         links: this.tasks.links
@@ -166,7 +165,13 @@ export default {
 
     //选择作品后请求该作品数据并重绘
     chooseArticle() {
-
+      console.log(this.article)
+      getTimeline({ params: { title: this.article } }).then((res) => {
+        this.tasks = res.data
+        //根据新数据重绘
+        gantt.init(this.$refs.gantt)
+        gantt.parse(this.tasks)
+      })
     },
 
 
@@ -260,12 +265,24 @@ export default {
 }
 
 </script>
-<style>
+<style lang="less" scoped>
 .app-container {
-  margin: 20px;
+  margin: 18px;
+  margin-left: 0;
+  .select2{
+    float: right;
+    margin-right: 100px;
+  }
+  .save{
+    position:absolute;
+    right: 15px;
+  }
+  
+  .left-container {
+  height: 550px;
+  margin-top: 15px;
+}
 }
 
-.left-container {
-  height: 600px;
-}
+
 </style>

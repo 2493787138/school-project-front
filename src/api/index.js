@@ -64,6 +64,10 @@ export const saveTimeline = (data) =>{
     return http.post('/timeline/save',data)
 }
 
+export const getTimeline =(data)=>{
+    return http.get(`/timeline\/get/`,data)
+}
+
 
 //chx
 
