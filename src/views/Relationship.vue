@@ -1,17 +1,21 @@
 <template>
     <div>
+        <!-- 头部 -->
         <el-select v-model="article" placeholder="请选选择作品" class="select1" :popper-append-to-body="false"
-        @change="chooseArticle" >
-        <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
-        </el-option>
-      </el-select>
-      <el-button @click="save" type="primary" class="save">添加角色</el-button>
-      <el-button @click="save" type="primary" class="save">添加关系</el-button>
-      <el-button @click="save" type="primary" class="save">保存</el-button>
-      
+            @change="chooseArticle">
+            <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
+            </el-option>
+        </el-select>
+        <el-button @click="save" type="primary" class="save">添加角色</el-button>
+        <el-button @click="save" type="primary" class="save">添加关系</el-button>
+        <el-button @click="save" type="primary" class="save">保存</el-button>
+        <!-- 关系图 -->
         <div ref="graph" id="main" style="width: 100%;height: 550px;">
-
         </div>
+        <!-- 抽屉 -->
+        <el-drawer title="我是标题" :visible.sync="drawer" :with-header="false">
+            <span>我来啦!</span>
+        </el-drawer>
     </div>
 </template>
 <script>
@@ -28,6 +32,8 @@ var a = {
 export default {
     data() {
         return {
+            direction: 'rtl',
+            drawer: false,
             graphdata: [
                 {
                     name: '肖霸',//name必须是唯一标识
@@ -53,7 +59,7 @@ export default {
                     },
                     category: '同龄好友',
                 },
-                
+
 
 
             ],
@@ -72,7 +78,7 @@ export default {
                         color: 'lightgreen',
                     }
                 },
-                
+
             ],
             graphlink: [
                 {
@@ -84,12 +90,20 @@ export default {
                     source: '厚小花',
                     target: '肖霸',
                     name: '情侣',
-                }, 
+                },
             ]
 
         }
     },
     methods: {
+
+        handleClose(done) {
+            this.$confirm('确认关闭？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => { });
+        },
 
         //重置整个图到只有一个根节点
         echartsRestore() {
@@ -97,38 +111,8 @@ export default {
         },
 
         click(node) {
-            var that = this
-            var target = [node.name]
-            if (node.status == 1)//删除
-            {
-                for (var i = 0; i < this.graphdata.length; i++) {
-                    if (
-                        target.some(function (item, index, arr) {
-                            return item == that.graphdata[i].parent
-                        })
-                    ) {
-                        target.push(this.graphdata[i].name)
-                        this.graphdata.splice(i, 1);
-                        i--
-                    }
-                }
-                node.status=0
-            }
-            else if (node.status == 0) {//增加
-                this.realData.forEach(element => {
-                    if (element.parent == node.name) {
-                        that.graphdata.push(element)
-                        target.push(element.name)
-                    }
-                });
-                node.status=1
-            }
-            
-            if(target.length!=1)
-            {
-                this.recreateGraph()
-            }
-
+            this.drawer = true
+            console.log(this.drawer)
 
         },
 
@@ -171,7 +155,7 @@ export default {
             tooltip: {
                 formatter:
                     (params) => {
-                        console.log(params.data)
+
                         // 打印确认params是对象还是数组
                         if (params.dataType == 'node') {
 

@@ -131,12 +131,12 @@ export default {
       height: 100%;
 
       .loginform {
-        width: 75%;
+        width: 83%;
         height: 80%;
         border: solid 1px;
         border-color: #eaeaea;
-        padding-left: 35px;
-        padding-right: 40px;
+        padding-left: 0;
+        padding-right: 0;
         padding-top: 35px;
         padding-bottom: 15px;
         border-radius: 15px;
