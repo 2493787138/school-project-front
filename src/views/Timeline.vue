@@ -2,22 +2,21 @@
   <div class="app-container">
     <div>
       <el-select v-model="article" placeholder="请选选择作品" class="select1" :popper-append-to-body="false"
-        @change="chooseArticle" >
+        @change="chooseArticle">
         <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-      <el-select 
-        v-model="timeScale" placeholder="请选择时间单位" class="select2" :popper-append-to-body="false"
+      <el-select v-model="timeScale" placeholder="请选择时间单位" class="select2" :popper-append-to-body="false"
         @change="setScaleConfig(timeScale)">
         <el-option v-for="item in timeOption" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-      <el-button @click="save" type="primary" class="save">保存</el-button>
-      
-      
+      <el-button @click="save" type="primary" class="save" :disabled="disabled">保存</el-button>
+
+
     </div>
     <div ref="gantt" class="left-container"></div>
-    
+
   </div>
 </template>
 <script>
@@ -44,7 +43,14 @@ gantt.attachEvent("onAfterTaskUpdate", function (id, item) {
 //添加数据
 gantt.attachEvent('onBeforeTaskAdd', function (id, item) {
   console.log('添加任务')
-  that.tasks.data.push(item)
+  if (that.article == '') {
+    alert('您还没有选择作品，请先选择作品再编辑故事时间线。否则将无法保存！！！')
+    return
+  }
+  else {
+    that.tasks.data.push(item)
+  }
+
 }, '')
 
 //删除数据
@@ -94,6 +100,14 @@ function onDragEnd(startPoint, endPoint, startDate, endDate, tasksBetweenDates, 
 
 export default {
   name: 'DhtmlxGantt',
+  computed: {
+    disabled() {
+      if (this.article == '')
+        return true
+      else
+        return false
+    }
+  },
   data() {
     return {
       saveMessage: '',
@@ -269,20 +283,20 @@ export default {
 .app-container {
   margin: 18px;
   margin-left: 0;
-  .select2{
+
+  .select2 {
     float: right;
     margin-right: 100px;
   }
-  .save{
-    position:absolute;
+
+  .save {
+    position: absolute;
     right: 15px;
   }
-  
+
   .left-container {
-  height: 550px;
-  margin-top: 15px;
+    height: 550px;
+    margin-top: 15px;
+  }
 }
-}
-
-
 </style>

@@ -1,14 +1,17 @@
 <template>
     <div>
         <!-- 头部 -->
-        <el-select v-model="article" placeholder="请选选择作品" class="select1" :popper-append-to-body="false"
-            @change="chooseArticle">
-            <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
-            </el-option>
-        </el-select>
-        <el-button @click="save" type="primary" class="save">添加角色</el-button>
-        <el-button @click="save" type="primary" class="save">添加关系</el-button>
-        <el-button @click="save" type="primary" class="save">保存</el-button>
+        <div class="header">
+            <el-select v-model="article" placeholder="请选选择作品" class="select1" :popper-append-to-body="false"
+                @change="chooseArticle">
+                <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
+                </el-option>
+            </el-select>
+            <el-button @click="addNode" type="primary" class="addNode">添加角色</el-button>
+            <el-button @click="addLink" type="primary" class="addLink">添加关系</el-button>
+            <el-button @click="save" type="primary" class="save">保存</el-button>
+        </div>
+
         <!-- 关系图 -->
         <div ref="graph" id="main" style="width: 100%;height: 550px;">
         </div>
@@ -257,4 +260,17 @@ export default {
 
 
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.header {
+    margin: 18px;
+    margin-left: 0;
+    .addNode{
+        margin-left: 15px;
+    }
+    .save {
+    position: absolute;
+    right: 15px;
+  }
+    
+}
+</style>

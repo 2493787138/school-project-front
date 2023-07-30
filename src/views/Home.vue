@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="div">
 
         <!-- 用户为作者时 -->
         <el-container v-if="$store.state.tab.user.role == 1" class="container">
@@ -152,25 +152,30 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.div{
+    height: 100%;
+    width: 100%;
+}
 .container {
     height: 100%;
     width: 100%;
 
     .graph{
         width: 98%;
-        height: 790px;
+        height: 631px;
     }
     .note{
         margin-top: 15px;
         margin-right: 15px;
         width: 96%;
-        height: 345px;
+        height: 28%;
 
     }
 }
 
 .user-card {
     margin-right: 15px;
+    height: 67%;
 
     .user {
 
