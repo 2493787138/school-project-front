@@ -29,9 +29,6 @@
       </el-col>
     </el-row>
 
-
-
-
   </el-container>
 </template>
 
@@ -145,8 +142,6 @@ export default {
         text-align: center;
         align-items: center;
         background-color: #fff;
-
-        /* 将背景颜色修改为 #c28e8e */
       }
     }
 
