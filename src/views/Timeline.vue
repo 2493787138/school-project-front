@@ -179,10 +179,13 @@ export default {
 
     //选择作品后请求该作品数据并重绘
     chooseArticle() {
-      console.log(this.article)
+      this.task=''
+      //console.log(this.article)
       getTimeline({ params: { title: this.article } }).then((res) => {
         this.tasks = res.data
+        
         //根据新数据重绘
+        gantt.clearAll()
         gantt.init(this.$refs.gantt)
         gantt.parse(this.tasks)
       })
@@ -237,7 +240,7 @@ export default {
     gantt.i18n.setLocale('cn'); //设置中文
     //左侧栏配置
     gantt.config.columns = [
-      { name: "text", label: "事件名称", tree: true, width: 100 },
+      { name: "text", label: "事件名称", tree: true, width: 180 },
       { name: "start_date", align: "center", width: 90 },
       { name: "duration", align: "center", width: 60 },
       { name: "add", width: 40 }
