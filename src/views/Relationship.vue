@@ -7,8 +7,9 @@
                 <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
                 </el-option>
             </el-select>
-            <el-button @click="addNode" type="primary" class="addNode">添加角色</el-button>
-            <el-button @click="addLink" type="primary" class="addLink">添加关系</el-button>
+            <el-button @click="newNode.open = true" type="primary" class="addNode">添加角色</el-button>
+            <el-button @click="addLink.open = true" type="primary" class="addNode">添加关系</el-button>
+            <el-button @click="addCategory.open = true" type="primary" class="addNode">添加类别</el-button>
             <el-button @click="save" type="primary" class="save">保存</el-button>
         </div>
 
@@ -16,9 +17,81 @@
         <div ref="graph" id="main" style="width: 100%;height: 550px;">
         </div>
         <!-- 抽屉 -->
-        <el-drawer title="我是标题" :visible.sync="drawer" :with-header="false">
-            <span>我来啦!</span>
+        <el-drawer title="" :visible.sync="drawer" :with-header="false" class="drawer">
+            <div class="title">
+                <el-input v-model="node.name" placeholder="请输入角色姓名"></el-input>
+            </div>
+            <div class="must-attribute">
+                角色类别：<el-select v-model="node.category" placeholder="请选择角色分类">
+                    <el-option v-for="item in graphcategories" :key="item.name" :label="item.name" :value="item.name">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="must-attribute">
+                性别：
+                <el-radio v-model="node.attribute.sex" label="男"><i class="el-icon-male"
+                        style="color: cornflowerblue;"></i>男</el-radio>
+                <el-radio v-model="node.attribute.sex" label="女"><i class="el-icon-female"
+                        style="color: rgb(237, 100, 182);"></i>女</el-radio>
+            </div>
+            <div class="must-attribute">
+                身份描述：
+                <el-input type="textarea" maxlength="100" v-model="node.attribute.description">
+
+                </el-input>
+            </div>
+            <div class="myattribute" v-for="(value, key) in node.attribute" v-if="key != 'sex' && key != 'description'">
+                {{ key }}:
+                <button class="delete" @click="deleteAttribute(key)"><i class="el-icon-close"></i></button>
+                <el-input type="textarea" autosize placeholder="请输入内容" v-model="node.attribute[key]">
+                </el-input>
+
+            </div>
+            <div class="buttons">
+                <el-button @click="newAttribute.open = true" type="success" plain>+ 增加属性</el-button>
+            </div>
+
         </el-drawer>
+
+        <!-- 新增角色 -->
+        <el-dialog title="请输入新增属性名" :visible.sync="newNode.open">
+            <el-form ref="newNode" :model="newNode" label-width="80px">
+                <el-form-item label="角色姓名">
+                    <el-input v-model="newNode.name"></el-input>
+                </el-form-item>
+                <el-form-item label="角色性别">
+
+                </el-form-item>
+                <el-form-item>
+
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+
+        <!-- 新增连接 -->
+        <el-dialog title="请输入新增属性名" :visible.sync="newAttribute.open">
+            <el-input v-model="newAttribute.key"></el-input>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="addAttribute">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 新增类别 -->
+        <el-dialog title="请输入新增属性名" :visible.sync="newAttribute.open">
+            <el-input v-model="newAttribute.key"></el-input>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="addAttribute">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 新增属性 -->
+        <el-dialog title="请输入新增属性名" :visible.sync="newAttribute.open">
+            <el-input v-model="newAttribute.key"></el-input>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="addAttribute">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -35,14 +108,50 @@ var a = {
 export default {
     data() {
         return {
+            myArticle: ['霸道总裁爱上我', '我不爱吃饭'],
+            article: '',
+            newAttribute: {
+                key: '',
+                open: false,
+            },
+            newNode: {
+                open: false,
+                name: '',
+                category: '',
+                sex: '',
+            },
+            newLink: {
+                target: '',
+                source: '',
+                type: '',
+                open: false
+            },
+            newCategory: {
+                open:false,
+                name: '主角',
+                symbolSize: 80,//节点大小
+                itemStyle: {
+                    color: 'lightpink',
+                }
+            },
+            clickNodeIndex: -1,//当前点击的节点的index
+            node: {
+                name: '',
+                category: '',
+                attribute: {
+                    sex: '',
+                    description: ''
+                },
+            },
             direction: 'rtl',
             drawer: false,
             graphdata: [
                 {
                     name: '肖霸',//name必须是唯一标识
                     attribute: {
-                        age: 15,//节点要展示的属性
-                        num: 100,
+                        sex: '男',
+                        description: '帅气又霸道的一中肖霸，对厚小花情有独钟',
+                        '身高': '161cm'
                     },
                     category: '主角',//节点分类index
                 },
@@ -99,6 +208,34 @@ export default {
         }
     },
     methods: {
+        addNode() {
+
+        },
+        addLink() {
+
+        },
+        addCategory() {
+
+        },
+        addAttribute() {
+            let obj = {}
+            obj[this.newAttribute.key] = ''
+            Object.assign(this.node.attribute, obj)
+            this.newAttribute.open = false
+            this.newAttribute.key = ''
+        },
+        deleteAttribute(key) {
+            delete this.node.attribute[key]
+            this.drawer = false
+            this.drawer = true
+        },
+        save() {
+
+        },
+
+        chooseArticle() {
+
+        },
 
         handleClose(done) {
             this.$confirm('确认关闭？')
@@ -108,15 +245,10 @@ export default {
                 .catch(_ => { });
         },
 
-        //重置整个图到只有一个根节点
-        echartsRestore() {
-
-        },
-
         click(node) {
             this.drawer = true
-            console.log(this.drawer)
-
+            this.node = node
+            console.log(this.node.attribute.sex)
         },
 
 
@@ -127,7 +259,6 @@ export default {
             myChart = echarts.init(chartDom).clear()
             myChart = echarts.init(chartDom)
             myChart.setOption(option, 'option');
-            console.log('重画了')
 
         }
 
@@ -142,10 +273,11 @@ export default {
         //点击事件
         myChart.on('click', function (params) {
             if (params.dataType === 'node') {
-                //console.log(option.series[0].data[params.dataIndex],'111')
                 clicknode(option.series[0].data[params.dataIndex])
-
-                //console.log(option,'option')
+                that.clickNodeIndex = (params.dataIndex)
+            }
+            else {
+                console.log('点击了连接')
             }
         });
 
@@ -264,13 +396,59 @@ export default {
 .header {
     margin: 18px;
     margin-left: 0;
-    .addNode{
+
+    .addNode {
         margin-left: 15px;
     }
+
     .save {
-    position: absolute;
-    right: 15px;
-  }
-    
+        position: absolute;
+        right: 15px;
+    }
+
+}
+
+.drawer {
+    .title {
+        margin: 35px;
+
+        /deep/.el-input__inner {
+            font-size: 35px;
+            font-weight: 700;
+            font-family: 楷体;
+        }
+    }
+
+    .must-attribute {
+        margin: 15px 35px;
+    }
+
+    .myattribute {
+        position: relative;
+        margin: 8px 30px;
+        padding: 7px 5px;
+        border: solid lightsteelblue;
+
+        .delete {
+            border: none;
+            background-color: white;
+            position: absolute;
+            right: 0;
+
+            :hover {
+                color: red;
+            }
+        }
+    }
+
+    .buttons {
+        position: absolute;
+        bottom: 25px;
+
+        .el-button {
+            margin: 15px 30px;
+        }
+    }
+
 }
 </style>
