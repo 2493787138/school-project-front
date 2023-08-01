@@ -54,18 +54,32 @@
         </el-drawer>
 
         <!-- 新增角色 -->
-        <el-dialog title="请输入新增属性名" :visible.sync="newNode.open">
+        <el-dialog title="新角色" :visible.sync="newNode.open">
             <el-form ref="newNode" :model="newNode" label-width="80px">
-                <el-form-item label="角色姓名">
+                <el-form-item label="角色姓名:">
                     <el-input v-model="newNode.name"></el-input>
                 </el-form-item>
-                <el-form-item label="角色性别">
-
+                <el-form-item label="角色分类:">
+                    <el-select v-model="newNode.category" placeholder="请选择角色分类">
+                        <el-option v-for="item in graphcategories" :key="item.name" :label="item.name" :value="item.name">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item>
-
+                <el-form-item label="角色性别:">
+                    <el-radio v-model="newNode.attribute.sex" label="男"><i class="el-icon-male"
+                            style="color: cornflowerblue;"></i>男</el-radio>
+                    <el-radio v-model="node.attribute.sex" label="女"><i class="el-icon-female"
+                            style="color: rgb(237, 100, 182);"></i>女</el-radio>
+                </el-form-item>
+                <el-form-item label="角色描述:">
+                    <el-input type="textarea" maxlength="100" v-model="newNode.attribute.description">
+                    </el-input>
                 </el-form-item>
             </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="addAttribute">确 定</el-button>
+                <el-button @click="close(newNode)">取消</el-button>
+            </div>
         </el-dialog>
 
 
@@ -118,7 +132,10 @@ export default {
                 open: false,
                 name: '',
                 category: '',
-                sex: '',
+                attribute: {
+                    sex: '',
+                    description: ''
+                }
             },
             newLink: {
                 target: '',
@@ -127,11 +144,11 @@ export default {
                 open: false
             },
             newCategory: {
-                open:false,
-                name: '主角',
-                symbolSize: 80,//节点大小
+                open: false,
+                name: '',
+                symbolSize: '',//节点大小
                 itemStyle: {
-                    color: 'lightpink',
+                    color: '',
                 }
             },
             clickNodeIndex: -1,//当前点击的节点的index
@@ -160,6 +177,8 @@ export default {
                     attribute: {
                         age: 15,//节点要展示的属性
                         num: 100,
+                        sex: '女',
+                        description:''
                     },
                     category: '主角',//节点分类index
                 },
@@ -168,6 +187,8 @@ export default {
                     attribute: {
                         age: 15,
                         num: 100,
+                        sex: '女',
+                        description:'女主的好朋友'
                     },
                     category: '同龄好友',
                 },
@@ -218,6 +239,10 @@ export default {
 
         },
         addAttribute() {
+            if (this.newAttribute.key.trim() == '') {
+                alert('属性名不得为空')
+                return
+            }
             let obj = {}
             obj[this.newAttribute.key] = ''
             Object.assign(this.node.attribute, obj)
@@ -236,22 +261,27 @@ export default {
         chooseArticle() {
 
         },
-
-        handleClose(done) {
-            this.$confirm('确认关闭？')
-                .then(_ => {
-                    done();
-                })
-                .catch(_ => { });
+        clear(obj) {
+            for (let key in obj) {
+                if (!obj.hasOwnProperty(key)) return;//排除掉原型继承而来的属性
+                if (typeof obj[key] == 'object' || typeof obj[key] == 'function') {
+                    this.clear(obj[key]);//递归遍历属性值的子属性
+                }
+                else{
+                    obj[key]=''
+                }
+            }
+        },
+        close(obj) {
+            this.clear(obj)
+            console.log(obj)
+            obj.open = false
         },
 
         click(node) {
             this.drawer = true
             this.node = node
-            console.log(this.node.attribute.sex)
         },
-
-
 
         //重画图
         recreateGraph() {
@@ -293,11 +323,7 @@ export default {
 
                         // 打印确认params是对象还是数组
                         if (params.dataType == 'node') {
-
-                            let str = ''
-                            for (var i in params.data.attribute) {
-                                str += `${i}：${params.data.attribute[i]}<br/>`
-                            }
+                            let str = params.data.attribute.description
                             return str
                         }
                         else {
