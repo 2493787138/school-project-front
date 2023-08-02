@@ -9,7 +9,31 @@
             </el-select>
             <el-button @click="newNode.open = true" type="primary" class="addNode">添加角色</el-button>
             <el-button @click="addLink.open = true" type="primary" class="addNode">添加关系</el-button>
-            <el-button @click="addCategory.open = true" type="primary" class="addNode">添加类别</el-button>
+            <!-- 类别管理 -->
+            <el-popover placement="right" width="380" trigger="click" style="position: relative;" @after-leave="recreateGraph">
+                <el-table :data="graphcategories">
+                    <el-table-column width="150" property="name" label="类名"></el-table-column>
+                    <el-table-column width="150" property="symbolSize" label="节点大小">
+                        <template slot-scope="scope2">
+                            <el-input-number v-model="scope2.row.symbolSize" size="mini" :min="30"
+                                :max="150"></el-input-number>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="80" prop="" label="颜色">
+                        <template slot-scope="scope2">
+                            <el-color-picker v-model="scope2.row.itemStyle.color" @change="test"
+                                size="small"></el-color-picker>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="buttons2">
+                    <el-input v-model="newCategory.name"></el-input>
+                    <button class="button" @click="addCategory">
+                        <i class="el-icon-circle-plus-outline"></i>
+                    </button>
+                </div>
+                <el-button slot="reference" type="primary" class="addNode">类别管理</el-button>
+            </el-popover>
             <el-button @click="save" type="primary" class="save">保存</el-button>
         </div>
 
@@ -17,9 +41,9 @@
         <div ref="graph" id="main" style="width: 100%;height: 550px;">
         </div>
         <!-- 抽屉 -->
-        <el-drawer title="" :visible.sync="drawer" :with-header="false" class="drawer">
+        <el-drawer title="" :visible.sync="drawer" :with-header="false" class="drawer" :before-close="handleClose">
             <div class="title">
-                <el-input v-model="node.name" placeholder="请输入角色姓名"></el-input>
+                <el-input v-model="node.name" placeholder="请输入角色姓名" @change="nameChange"></el-input>
             </div>
             <div class="must-attribute">
                 角色类别：<el-select v-model="node.category" placeholder="请选择角色分类">
@@ -54,7 +78,7 @@
         </el-drawer>
 
         <!-- 新增角色 -->
-        <el-dialog title="新角色" :visible.sync="newNode.open">
+        <el-dialog title="新角色" :visible.sync="newNode.open" @close="close(newNode)">
             <el-form ref="newNode" :model="newNode" label-width="80px">
                 <el-form-item label="角色姓名:">
                     <el-input v-model="newNode.name"></el-input>
@@ -77,7 +101,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="addAttribute">确 定</el-button>
+                <el-button type="primary" @click="addNode">确 定</el-button>
                 <el-button @click="close(newNode)">取消</el-button>
             </div>
         </el-dialog>
@@ -91,13 +115,6 @@
             </div>
         </el-dialog>
 
-        <!-- 新增类别 -->
-        <el-dialog title="请输入新增属性名" :visible.sync="newAttribute.open">
-            <el-input v-model="newAttribute.key"></el-input>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="addAttribute">确 定</el-button>
-            </div>
-        </el-dialog>
 
         <!-- 新增属性 -->
         <el-dialog title="请输入新增属性名" :visible.sync="newAttribute.open">
@@ -112,7 +129,7 @@
 import * as jquery from 'jquery';
 import $ from 'jquery'
 import * as echarts from 'echarts';
-
+var that
 var chartDom;
 var myChart;
 var option;
@@ -124,6 +141,7 @@ export default {
         return {
             myArticle: ['霸道总裁爱上我', '我不爱吃饭'],
             article: '',
+            temp: '',
             newAttribute: {
                 key: '',
                 open: false,
@@ -145,7 +163,7 @@ export default {
             },
             newCategory: {
                 open: false,
-                name: '',
+                name: '啊啊啊',
                 symbolSize: '',//节点大小
                 itemStyle: {
                     color: '',
@@ -178,7 +196,7 @@ export default {
                         age: 15,//节点要展示的属性
                         num: 100,
                         sex: '女',
-                        description:''
+                        description: ''
                     },
                     category: '主角',//节点分类index
                 },
@@ -188,27 +206,24 @@ export default {
                         age: 15,
                         num: 100,
                         sex: '女',
-                        description:'女主的好朋友'
+                        description: '女主的好朋友'
                     },
                     category: '同龄好友',
                 },
-
-
-
             ],
             graphcategories: [
                 {
                     name: '主角',
                     symbolSize: 80,//节点大小
                     itemStyle: {
-                        color: 'lightpink',
+                        color: '#E79DDE',
                     }
                 },
                 {
                     name: '同龄好友',
                     symbolSize: 60,//节点大小
                     itemStyle: {
-                        color: 'lightgreen',
+                        color: '#C7F3D2',
                     }
                 },
 
@@ -224,19 +239,37 @@ export default {
                     target: '肖霸',
                     name: '情侣',
                 },
+                {
+                    source: '肖霸',
+                    target: '厚小花',
+                    name: '死敌',
+                },
+
             ]
 
         }
     },
     methods: {
+        test() {
+            console.log(this.graphcategories, 'cate')
+        },
+        handleClose(done) {
+            this.recreateGraph()
+            done()
+        },
         addNode() {
-
+            this.newNode.open = false
+            var newNode = { ...this.newNode }
+            delete newNode.open
+            this.graphdata.push(newNode)
+            this.recreateGraph()
         },
         addLink() {
 
         },
         addCategory() {
-
+            this.graphcategories.push({...this.newCategory})
+            this.newCategory.name=''
         },
         addAttribute() {
             if (this.newAttribute.key.trim() == '') {
@@ -254,6 +287,28 @@ export default {
             this.drawer = false
             this.drawer = true
         },
+        nameChange() {
+            //名字没有改变
+            if (this.node.name == this.temp)
+                return
+            //有重名
+            if (this.graphdata.some(function (item, index, arr) {
+                return (item.name == that.node.name && that.clickNodeIndex != index)
+            })) {
+                alert('已有该命名的其他角色，不允许更改')
+                return
+            }
+            //名字改变了,将link对准
+            this.graphlink.forEach(element => {
+                if (element.source == this.temp) {
+                    element.source = this.node.name
+                }
+                if (element.target == this.temp) {
+                    element.target = this.node.name
+                }
+            });
+
+        },
         save() {
 
         },
@@ -267,20 +322,21 @@ export default {
                 if (typeof obj[key] == 'object' || typeof obj[key] == 'function') {
                     this.clear(obj[key]);//递归遍历属性值的子属性
                 }
-                else{
-                    obj[key]=''
+                else {
+                    obj[key] = ''
                 }
             }
         },
         close(obj) {
             this.clear(obj)
-            console.log(obj)
             obj.open = false
         },
 
-        click(node) {
+        clickNode(node) {
             this.drawer = true
             this.node = node
+            this.temp = node.name
+            console.log(this.temp, 'temp')
         },
 
         //重画图
@@ -294,8 +350,8 @@ export default {
 
     },
     mounted() {
-        var that = this
-        window.clicknode = this.click
+        that = this
+        window.clicknode = this.clickNode
         chartDom = this.$refs.graph;
         myChart = echarts.init(chartDom);
 
@@ -383,12 +439,7 @@ export default {
                     layoutAnimation: false
                 },
                 draggable: true,
-                lineStyle: {
-                    normal: {
-                        width: 2,
-                        color: '#4b565b',
-                    }
-                },
+
                 edgeLabel: {
                     normal: {
                         show: true,
@@ -400,8 +451,15 @@ export default {
                 label: {
                     normal: {
                         show: true,
-                        textStyle: {}
+                        textStyle: {
+
+                        }
                     }
+                },
+                lineStyle: {
+                    color: 'source',
+                    curveness: 0.4,
+                    width: 3
                 },
 
                 // 数据
@@ -432,6 +490,33 @@ export default {
         right: 15px;
     }
 
+
+
+}
+
+.buttons2 {
+    margin-top: 15px;
+    position: relative;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    /deep/.el-input__inner {
+        width: 60%;
+        height: 25px;
+    }
+    .button{
+        position: absolute;
+        right: 20px;
+        margin: 10px;
+        font-size: x-large;
+        border: none;
+        background-color: inherit;
+        font-weight: 600;
+        color: darkgrey;
+        :hover{
+            color: deepskyblue;
+        }
+    }
 }
 
 .drawer {

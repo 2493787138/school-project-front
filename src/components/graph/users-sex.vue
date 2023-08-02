@@ -69,7 +69,7 @@
   <style lang="less" scoped>
  .graph {
 
-height: 455px;
-width: 455px;
+height: 380px;
+width: 380px;
 }
   </style>

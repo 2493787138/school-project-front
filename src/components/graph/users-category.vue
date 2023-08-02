@@ -75,8 +75,8 @@ export default {
 </script>
 <style lang="less" scoped>
 .graph {
-  //color: rgb(231, 219, 54);
-  height: 455px;
-  width: 455px;
+
+height: 380px;
+width: 380px;
 }
 </style>

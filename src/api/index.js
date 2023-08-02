@@ -1,5 +1,9 @@
 import http from "@/utils/request";
 import { data } from "jquery";
+//test
+export const test = (data) =>{
+    return http.post('/test',data)
+}
 
 //login
 export const login = (data) =>{
