@@ -19,6 +19,7 @@ const http = {
             method: 'post',
             url: url
         }
+        console.log('post')
         if (params) config.data = params
         return request(config)
     },
