@@ -11,17 +11,8 @@ export const login = (data) =>{
 }
 
 // 假设后端接口中的 gender 参数是字符串类型
-export function register(registerForm) {
-    return request({
-        url: '/login/register',
-        method: 'post',
-        data: {
-            username: registerForm.username,
-            password: registerForm.password,
-            age: registerForm.age,
-            gender: String(registerForm.gender) // 将性别从数字转换为字符串
-        }
-    })
+export const register=(data)=> {
+    return http.post('/login/register',data)
 }
 
 //managerHome
@@ -43,7 +34,7 @@ export const getManageData = () =>{
 
 //User
 export const getUser = (params) =>{
-    return http.get('/user\/getUser/',params)
+    return http.get('/user/getUser/',params)
 }
 
 export const addUser = (data) =>{
@@ -69,7 +60,7 @@ export const saveTimeline = (data) =>{
 }
 
 export const getTimeline =(data)=>{
-    return http.get(`/timeline\/get/`,data)
+    return http.get(`/timeline/get/`,data)
 }
 
 

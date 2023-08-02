@@ -23,8 +23,8 @@
           </el-form-item>
           <el-form-item prop="gender" label="性别:">
             <el-radio-group v-model.number="registerForm.gender" style="width: 209px;">
-              <el-radio :label="0">男</el-radio>
-              <el-radio :label="1">女</el-radio>
+              <el-radio :label="'男'">男</el-radio>
+              <el-radio :label="'女'">女</el-radio>
             </el-radio-group>
           </el-form-item>
 
@@ -70,7 +70,7 @@ export default {
           {required: true,  message: '请选择出生日期',trigger: 'blur'}
         ],
         gender: [
-          {required: true,  trigger: 'blur'}
+          {required: true, message: '请选择性别', trigger: 'blur'}
         ],
       },
       showRegisterForm: true
@@ -82,14 +82,19 @@ export default {
         if (valid) {
           // 将性别从字符串转换为数字
           this.registerForm.gender = this.registerForm.gender === '男' ? 0 : 1;
-          register(this.registerForm).then(({data}) => {
-            if (data.success) {
-              this.$message.success("注册成功，请登录");
-              this.showRegisterForm = false;
-            } else {
-              this.$message.error(data.message);
-            }
-          })
+          this.registerForm.birthdate = this.registerForm.birthdate ? new Date(this.registerForm.birthdate).toISOString().substr(0, 10) : null;
+          register(this.registerForm)
+              .then(({data}) => {
+                if (data.success) {
+                  this.$message.success("注册成功，请登录");
+                  this.$refs.registerForm.resetFields();
+                } else {
+                  this.$message.error(data.message);
+                }
+              })
+              .catch(error => {
+                this.$message.error(error.message);
+              });
         }
       })
     },
