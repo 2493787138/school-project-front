@@ -8,11 +8,18 @@
                 </el-option>
             </el-select>
             <el-button @click="newNode.open = true" type="primary" class="addNode">添加角色</el-button>
-            <el-button @click="addLink.open = true" type="primary" class="addNode">添加关系</el-button>
+            <el-button @click="newLink.open = true" type="primary" class="addNode">添加关系</el-button>
             <!-- 类别管理 -->
-            <el-popover placement="right" width="380" trigger="click" style="position: relative;" @after-leave="recreateGraph">
+            <el-popover placement="right" width="450" trigger="click" style="position: relative;"
+                @after-leave="recreateGraph">
                 <el-table :data="graphcategories">
-                    <el-table-column width="150" property="name" label="类名"></el-table-column>
+                    <el-table-column width="150" property="name" label="类名">
+                        <template slot-scope="scope2">
+                            <el-input v-model="scope2.row.name" class="editCategory" @focus="temp = scope2.row.name"
+                                @blur="editCategory(scope2.row.name)">
+                            </el-input>
+                        </template>
+                    </el-table-column>
                     <el-table-column width="150" property="symbolSize" label="节点大小">
                         <template slot-scope="scope2">
                             <el-input-number v-model="scope2.row.symbolSize" size="mini" :min="30"
@@ -25,6 +32,13 @@
                                 size="small"></el-color-picker>
                         </template>
                     </el-table-column>
+                    <el-table-column width="70" prop="" label="操作">
+                        <template slot-scope="scope2">
+                            <el-button icon="el-icon-delete" class="delete1"
+                                @click="deleteCategory(scope2.row.name)"></el-button>
+
+                        </template>
+                    </el-table-column>
                 </el-table>
                 <div class="buttons2">
                     <el-input v-model="newCategory.name"></el-input>
@@ -34,6 +48,7 @@
                 </div>
                 <el-button slot="reference" type="primary" class="addNode">类别管理</el-button>
             </el-popover>
+            <!-- 大保存 -->
             <el-button @click="save" type="primary" class="save">保存</el-button>
         </div>
 
@@ -108,10 +123,30 @@
 
 
         <!-- 新增连接 -->
-        <el-dialog title="请输入新增属性名" :visible.sync="newAttribute.open">
-            <el-input v-model="newAttribute.key"></el-input>
+        <el-dialog title="添加关系" :visible.sync="newLink.open" class="newLink">
+            <el-form ref="newLink" :model="newNode" label-width="80px">
+                <el-form-item label="源:">
+                    <el-select v-model="newLink.source">
+                        <el-option v-for="item in graphdata" :key="item.name" :label="item.name" :value="item.name">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="目标:">
+                    <el-select v-model="newLink.target">
+                        <el-option v-for="item in graphdata" :key="item.name" :label="item.name" :value="item.name">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="关系类型:">
+                    <el-select v-model="temp">
+                        <el-option v-for="item in linkOption" :key="item.value" :label="item.line" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="addAttribute">确 定</el-button>
+                <el-button type="primary" @click="addLink">确 定</el-button>
+                <el-button @click="close(newLink)">取消</el-button>
             </div>
         </el-dialog>
 
@@ -142,6 +177,16 @@ export default {
             myArticle: ['霸道总裁爱上我', '我不爱吃饭'],
             article: '',
             temp: '',
+            linkOption:[
+                {
+                    value:1,
+                    line:'—————————▶'
+                },
+                {
+                    value:2,
+                    line:'——————————'
+                }
+            ],
             newAttribute: {
                 key: '',
                 open: false,
@@ -158,7 +203,7 @@ export default {
             newLink: {
                 target: '',
                 source: '',
-                type: '',
+                symbol:'',
                 open: false
             },
             newCategory: {
@@ -233,6 +278,7 @@ export default {
                     source: '厚小花',//起点和终点与node中name对应
                     target: '小莲花',
                     name: '闺蜜',//提示文字
+                    symbol:['none','none']
 
                 }, {
                     source: '厚小花',
@@ -249,28 +295,58 @@ export default {
 
         }
     },
+
     methods: {
         test() {
             console.log(this.graphcategories, 'cate')
         },
-        handleClose(done) {
-            this.recreateGraph()
-            done()
-        },
         addNode() {
             this.newNode.open = false
-            var newNode = { ...this.newNode }
-            delete newNode.open
-            this.graphdata.push(newNode)
+            var newArray = $.extend(true, [], this.newNode);
+            delete newArray.open
+            this.graphdata.push(newArray)
             this.recreateGraph()
         },
         addLink() {
+            this.close(this.newLink)
+
+        },
+
+        //类别操作
+        deleteCategory(category) {
+            if (this.graphdata.some(function (item, index, arr) {
+                return (item.category == category)
+            })) {
+                alert('该类别下还有角色，请确保没有角色了再删除该类别')
+                return
+            }
+            let index = this.graphcategories.findIndex(element => element.name == category)
+            this.graphcategories.splice(index, 1)
+            console.log(this.graphcategories)
 
         },
         addCategory() {
-            this.graphcategories.push({...this.newCategory})
-            this.newCategory.name=''
+            var newArray = $.extend(true, [], this.newCategory);
+            newArray.itemStyle.color = '#BB2121'
+            this.graphcategories.push({ ...this.newCategory })
+            this.newCategory.name = ''
         },
+        editCategory(category) {
+            //名字没有改变
+            if (category == this.temp)
+                return
+            //有重名
+
+            //名字改变了,将node对准
+            this.graphdata.forEach(element => {
+                if (element.category == this.temp) {
+                    element.category = category
+                }
+            });
+            console.log(this.graphdata)
+            console.log(this.graphcategories)
+        },
+        //属性操作
         addAttribute() {
             if (this.newAttribute.key.trim() == '') {
                 alert('属性名不得为空')
@@ -307,8 +383,13 @@ export default {
                     element.target = this.node.name
                 }
             });
-
         },
+        handleClose(done) {
+            this.recreateGraph()
+            done()
+        },
+
+        //保存所有修改到数据库
         save() {
 
         },
@@ -341,11 +422,10 @@ export default {
 
         //重画图
         recreateGraph() {
-            option.series[0].data = this.graphdata
-            myChart = echarts.init(chartDom).clear()
-            myChart = echarts.init(chartDom)
+            console.log(option.series, '0')
+            myChart.clear()
+            myChart = echarts.init(chartDom);
             myChart.setOption(option, 'option');
-
         }
 
     },
@@ -379,7 +459,9 @@ export default {
 
                         // 打印确认params是对象还是数组
                         if (params.dataType == 'node') {
-                            let str = params.data.attribute.description
+                            let str = params.data.category
+                            str += '<br/>'
+                            str += params.data.attribute.description
                             return str
                         }
                         else {
@@ -494,17 +576,35 @@ export default {
 
 }
 
+.delete1 {
+    margin-left: 25px;
+    border: 0;
+    background-color: inherit;
+    color: red;
+    padding: 0;
+    margin: 0;
+}
+
+.editCategory {
+    /deep/.el-input__inner {
+        width: 95%;
+        height: 25px;
+    }
+}
+
 .buttons2 {
     margin-top: 15px;
     position: relative;
     height: 30px;
     display: flex;
     align-items: center;
+
     /deep/.el-input__inner {
         width: 60%;
         height: 25px;
     }
-    .button{
+
+    .button {
         position: absolute;
         right: 20px;
         margin: 10px;
@@ -513,7 +613,8 @@ export default {
         background-color: inherit;
         font-weight: 600;
         color: darkgrey;
-        :hover{
+
+        :hover {
             color: deepskyblue;
         }
     }
@@ -561,5 +662,4 @@ export default {
         }
     }
 
-}
-</style>
+}</style>
