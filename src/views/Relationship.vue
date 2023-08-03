@@ -107,7 +107,7 @@
                 <el-form-item label="角色性别:">
                     <el-radio v-model="newNode.attribute.sex" label="男"><i class="el-icon-male"
                             style="color: cornflowerblue;"></i>男</el-radio>
-                    <el-radio v-model="node.attribute.sex" label="女"><i class="el-icon-female"
+                    <el-radio v-model="newNode.attribute.sex" label="女"><i class="el-icon-female"
                             style="color: rgb(237, 100, 182);"></i>女</el-radio>
                 </el-form-item>
                 <el-form-item label="角色描述:">
@@ -304,7 +304,7 @@ export default {
             this.newNode.open = false
             var newArray = $.extend(true, [], this.newNode);
             delete newArray.open
-            this.graphdata.push(newArray)
+            this.graphdata.push({...newArray})
             this.recreateGraph()
         },
         addLink() {
@@ -425,6 +425,7 @@ export default {
             console.log(option.series, '0')
             myChart.clear()
             myChart = echarts.init(chartDom);
+            console.log(option.series, '0')
             myChart.setOption(option, 'option');
         }
 
