@@ -48,6 +48,12 @@ export const editUser = (data) =>{
 export const delUser = (data) =>{
     return http.delete('/user/del',data)
 }
+export const getUserPassword = () =>{
+    return http.get('/user/getUserPassword')
+}
+export const editUserPassword = (data) =>{
+    return http.post('/user/editUserPassword',data)
+}
 
 //myArticle
 export const getLabels =()=>{
