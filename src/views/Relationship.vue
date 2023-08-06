@@ -7,8 +7,8 @@
                 <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
                 </el-option>
             </el-select>
-            <el-button @click="newNode.open = true" type="primary" class="addNode">添加角色</el-button>
-            <el-button @click="newLink.open = true" type="primary" class="addNode">添加关系</el-button>
+            <el-button @click="newNode.open=true" type="primary" class="addNode">添加角色</el-button>
+            <el-button @click="newLink.open=true" type="primary" class="addNode">添加关系</el-button>
             <!-- 类别管理 -->
             <el-popover placement="right" width="450" trigger="click" style="position: relative;"
                 @after-leave="recreateGraph">
@@ -88,12 +88,13 @@
             </div>
             <div class="buttons">
                 <el-button @click="newAttribute.open = true" type="success" plain>+ 增加属性</el-button>
+                <el-button @click="deleteLinkOrNode('node')" type="danger" plain>- 删除角色</el-button>
             </div>
 
         </el-drawer>
 
         <!-- 新增角色 -->
-        <el-dialog title="新角色" :visible.sync="newNode.open" @close="close(newNode)">
+        <el-dialog width="30%" title="新角色" :visible.sync="newNode.open" @close="close(newNode)" class="dialog">
             <el-form ref="newNode" :model="newNode" label-width="80px">
                 <el-form-item label="角色姓名:">
                     <el-input v-model="newNode.name"></el-input>
@@ -123,19 +124,22 @@
 
 
         <!-- 新增连接 -->
-        <el-dialog title="添加关系" :visible.sync="newLink.open" class="newLink">
+        <el-dialog :visible="newLink.open" :destroy-on-close="true" :append-to-body="true" width="30%" :title="editLink?'编辑关系':'新增关系'" class="dialog" @close="close(newLink)">
             <el-form ref="newLink" :model="newNode" label-width="80px">
                 <el-form-item label="源:">
-                    <el-select v-model="newLink.source">
+                    <el-select v-model="newLink.source" :disabled="editLink">
                         <el-option v-for="item in graphdata" :key="item.name" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="目标:">
-                    <el-select v-model="newLink.target">
+                    <el-select v-model="newLink.target" :disabled="editLink">
                         <el-option v-for="item in graphdata" :key="item.name" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="名称">
+                    <el-input v-model="newLink.name"></el-input>
                 </el-form-item>
                 <el-form-item label="关系类型:">
                     <el-select v-model="temp">
@@ -145,14 +149,15 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
+                <el-button type="danger" @click="deleteLinkOrNode('link')" v-if="editLink">删 除</el-button>
                 <el-button type="primary" @click="addLink">确 定</el-button>
-                <el-button @click="close(newLink)">取消</el-button>
+                <el-button @click="close(newLink)">取 消</el-button>
             </div>
         </el-dialog>
 
 
         <!-- 新增属性 -->
-        <el-dialog title="请输入新增属性名" :visible.sync="newAttribute.open">
+        <el-dialog width="30%" title="请输入新增属性名" :visible.sync="newAttribute.open" class="dialog">
             <el-input v-model="newAttribute.key"></el-input>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="addAttribute">确 定</el-button>
@@ -174,17 +179,18 @@ var a = {
 export default {
     data() {
         return {
+            test:false,
             myArticle: ['霸道总裁爱上我', '我不爱吃饭'],
             article: '',
             temp: '',
-            linkOption:[
+            linkOption: [
                 {
-                    value:1,
-                    line:'—————————▶'
+                    value: 1,
+                    line: '—————————▶'
                 },
                 {
-                    value:2,
-                    line:'——————————'
+                    value: 2,
+                    line: '——————————'
                 }
             ],
             newAttribute: {
@@ -203,7 +209,8 @@ export default {
             newLink: {
                 target: '',
                 source: '',
-                symbol:'',
+                symbol: '',
+                name: '',
                 open: false
             },
             newCategory: {
@@ -214,6 +221,7 @@ export default {
                     color: '',
                 }
             },
+            editLink: false,
             clickNodeIndex: -1,//当前点击的节点的index
             node: {
                 name: '',
@@ -278,7 +286,7 @@ export default {
                     source: '厚小花',//起点和终点与node中name对应
                     target: '小莲花',
                     name: '闺蜜',//提示文字
-                    symbol:['none','none']
+                    symbol: ['none', 'none']
 
                 }, {
                     source: '厚小花',
@@ -297,19 +305,42 @@ export default {
     },
 
     methods: {
-        test() {
-            console.log(this.graphcategories, 'cate')
-        },
+        
+        //角色操作
         addNode() {
             this.newNode.open = false
             var newArray = $.extend(true, [], this.newNode);
             delete newArray.open
-            this.graphdata.push({...newArray})
+            this.graphdata.push({ ...newArray })
             this.recreateGraph()
         },
+        //关系操作
         addLink() {
+            if (this.temp == 1) {
+                //this.newLink.symbol=["none","arrow"]
+            }
+            else {
+                this.newLink.symbol = ["none", "none"]
+            }
+            var newLink = $.extend(true, [], this.newLink)
+            delete newLink.open
+            this.graphlink.push({ ...newLink })
+
+            console.log(this.graphlink, 'graphlink')
+            this.recreateGraph()
             this.close(this.newLink)
 
+        },
+        deleteLinkOrNode(type) {
+            console.log(this.clickNodeIndex)
+            if(type=='link'){
+                this.graphlink.splice(this.clickNodeIndex,1)
+            }
+            else if(type=='node'){
+                this.graphdata.splice(this.clickNodeIndex,1)
+            }
+            this.recreateGraph()
+            this.close(this.newLink)
         },
 
         //类别操作
@@ -411,6 +442,7 @@ export default {
         close(obj) {
             this.clear(obj)
             obj.open = false
+            this.editLink = false
         },
 
         clickNode(node) {
@@ -419,32 +451,46 @@ export default {
             this.temp = node.name
             console.log(this.temp, 'temp')
         },
+        clickLink(link) {
+            this.newLink = link
+            this.editLink = true
+            this.newLink.open = true
+            
+            if (link.symbol.toString() == ['none', 'none'].toString())
+                this.temp = 2
+            else {
+                this.temp = 1
+            }
+        },
 
         //重画图
         recreateGraph() {
-            console.log(option.series, '0')
-            myChart.clear()
+            console.log(option.series[0], '0')
+            //myChart.clear()
             myChart = echarts.init(chartDom);
-            console.log(option.series, '0')
-            myChart.setOption(option, 'option');
+            myChart.setOption(option)
+
         }
 
     },
     mounted() {
         that = this
         window.clicknode = this.clickNode
+        window.clicklink = this.clickLink
         chartDom = this.$refs.graph;
+        chartDom.setAttribute('_echarts_instance_', '')
         myChart = echarts.init(chartDom);
 
 
         //点击事件
         myChart.on('click', function (params) {
+            that.clickNodeIndex = (params.dataIndex)
             if (params.dataType === 'node') {
                 clicknode(option.series[0].data[params.dataIndex])
-                that.clickNodeIndex = (params.dataIndex)
             }
             else {
-                console.log('点击了连接')
+                console.log(params.data)
+                clicklink(option.series[0].links[params.dataIndex])
             }
         });
 
@@ -509,13 +555,7 @@ export default {
                 roam: true, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移,可以设置成 'scale' 或者 'move'。设置成 true 为都开启
                 edgeSymbol: ['circle', 'arrow'],
                 edgeSymbolSize: [2, 10],//边宽和箭头大小
-                edgeLabel: {
-                    normal: {
-                        textStyle: {
-                            fontSize: 20,
-                        }
-                    }
-                },
+
                 force: {
                     repulsion: 2500,
                     edgeLength: [50, 500],
@@ -525,6 +565,9 @@ export default {
 
                 edgeLabel: {
                     normal: {
+                        textStyle: {
+                            fontSize: 20,
+                        },
                         show: true,
                         formatter: function (x) {
                             return x.data.name;//边上的文字
@@ -535,6 +578,8 @@ export default {
                     normal: {
                         show: true,
                         textStyle: {
+                            fontSize: 20
+
 
                         }
                     }
@@ -575,6 +620,12 @@ export default {
 
 
 
+}
+
+.dialog{
+    /deep/.el-input{
+        width: 221px;
+    }
 }
 
 .delete1 {
@@ -663,4 +714,5 @@ export default {
         }
     }
 
-}</style>
+}
+</style>
