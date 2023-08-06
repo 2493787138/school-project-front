@@ -13,12 +13,15 @@ Mock.mock('/api/managerHome/getUserCategory','get',ManagerHomeApi.getUserCategor
 Mock.mock('/api/managerHome/getManageData','get',ManagerHomeApi.getManageData)
 
 Mock.mock('/api/myArticle/getLabels','get',myArticleApi.getLabels)
+Mock.mock('/api/myArticle/getArticle','get',myArticleApi.getArticleList)
 
 Mock.mock('/api/user/add','post',userApi.createUser)
 Mock.mock('/api/user/edit','patch',userApi.updateUser)
 Mock.mock('/api/user/del','delete',userApi.deleteUser)
 Mock.mock(/api\/user\/getUser/,'get',userApi.getUserList)
 //Mock.mock('/api/user/',userApi.batchremove)
+
+
 
 Mock.mock('/api/timeline/save','post',timelineApi.save)
 Mock.mock(/api\/timeline\/get/,'get',timelineApi.get)

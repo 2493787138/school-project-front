@@ -10,7 +10,7 @@ export const login = (data) =>{
     return http.post('/login/login',data)
 }
 
-// 假设后端接口中的 gender 参数是字符串类型
+// register (假设后端接口中的 gender 参数是字符串类型
 export const register=(data)=> {
     return http.post('/login/register',data)
 }
@@ -59,6 +59,11 @@ export const editUserPassword = (data) =>{
 export const getLabels =()=>{
     return http.get('/myArticle/getLabels')
 }
+
+export const getArticle =()=>{
+    return http.get('/myArticle/getArticle')
+}
+
 
 //Timeline
 export const saveTimeline = (data) =>{
