@@ -7,8 +7,8 @@
                 <el-option v-for="item in myArticle" :key="item" :label="item" :value="item">
                 </el-option>
             </el-select>
-            <el-button @click="newNode.open=true" type="primary" class="addNode">添加角色</el-button>
-            <el-button @click="newLink.open=true" type="primary" class="addNode">添加关系</el-button>
+            <el-button @click="newNode.open = true" type="primary" class="addNode" :disabled="disabled">添加角色</el-button>
+            <el-button @click="newLink.open = true" type="primary" class="addNode" :disabled="disabled">添加关系</el-button>
             <!-- 类别管理 -->
             <el-popover placement="right" width="450" trigger="click" style="position: relative;"
                 @after-leave="recreateGraph">
@@ -46,10 +46,10 @@
                         <i class="el-icon-circle-plus-outline"></i>
                     </button>
                 </div>
-                <el-button slot="reference" type="primary" class="addNode">类别管理</el-button>
+                <el-button slot="reference" type="primary" class="addNode" :disabled="disabled">类别管理</el-button>
             </el-popover>
             <!-- 大保存 -->
-            <el-button @click="save" type="primary" class="save">保存</el-button>
+            <el-button @click="save" type="primary" class="save" :disabled="disabled">保存</el-button>
         </div>
 
         <!-- 关系图 -->
@@ -95,23 +95,23 @@
 
         <!-- 新增角色 -->
         <el-dialog width="30%" title="新角色" :visible.sync="newNode.open" @close="close(newNode)" class="dialog">
-            <el-form ref="newNode" :model="newNode" label-width="80px">
-                <el-form-item label="角色姓名:">
+            <el-form ref="newNode" :model="newNode" label-width="110px" :rules="noderules">
+                <el-form-item label="角色姓名:" prop="name">
                     <el-input v-model="newNode.name"></el-input>
                 </el-form-item>
-                <el-form-item label="角色分类:">
+                <el-form-item label="角色分类:" prop="category">
                     <el-select v-model="newNode.category" placeholder="请选择角色分类">
                         <el-option v-for="item in graphcategories" :key="item.name" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="角色性别:">
+                <el-form-item label="角色性别:" prop="attribute.sex">
                     <el-radio v-model="newNode.attribute.sex" label="男"><i class="el-icon-male"
                             style="color: cornflowerblue;"></i>男</el-radio>
                     <el-radio v-model="newNode.attribute.sex" label="女"><i class="el-icon-female"
                             style="color: rgb(237, 100, 182);"></i>女</el-radio>
                 </el-form-item>
-                <el-form-item label="角色描述:">
+                <el-form-item label="角色描述:" prop="description">
                     <el-input type="textarea" maxlength="100" v-model="newNode.attribute.description">
                     </el-input>
                 </el-form-item>
@@ -124,25 +124,26 @@
 
 
         <!-- 新增连接 -->
-        <el-dialog :visible="newLink.open" :destroy-on-close="true" :append-to-body="true" width="30%" :title="editLink?'编辑关系':'新增关系'" class="dialog" @close="close(newLink)">
-            <el-form ref="newLink" :model="newNode" label-width="80px">
-                <el-form-item label="源:">
+        <el-dialog :visible="newLink.open" :destroy-on-close="true" :append-to-body="true" width="30%"
+            :title="editLink ? '编辑关系' : '新增关系'" class="dialog" @close="close(newLink)">
+            <el-form ref="newLink" :model="newLink" label-width="110px" :rules="linkrules">
+                <el-form-item label="源:" prop="source">
                     <el-select v-model="newLink.source" :disabled="editLink">
                         <el-option v-for="item in graphdata" :key="item.name" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="目标:">
+                <el-form-item label="目标:" prop="target">
                     <el-select v-model="newLink.target" :disabled="editLink">
                         <el-option v-for="item in graphdata" :key="item.name" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="名称">
+                <el-form-item label="名称" prop="name">
                     <el-input v-model="newLink.name"></el-input>
                 </el-form-item>
-                <el-form-item label="关系类型:">
-                    <el-select v-model="temp">
+                <el-form-item label="关系类型:" prop="symbolnum">
+                    <el-select v-model="newLink.symbolnum">
                         <el-option v-for="item in linkOption" :key="item.value" :label="item.line" :value="item.value">
                         </el-option>
                     </el-select>
@@ -169,6 +170,7 @@
 import * as jquery from 'jquery';
 import $ from 'jquery'
 import * as echarts from 'echarts';
+import { getRelationship, saveRelationship } from '@/api'
 var that
 var chartDom;
 var myChart;
@@ -179,7 +181,33 @@ var a = {
 export default {
     data() {
         return {
-            test:false,
+            test: false,
+            noderules: {
+                name: [
+                    { required: true, message: '姓名为必填项', trigger: 'blur' },
+                    { min: 1, max: 10, message: '长度在 1 到 10个字符', trigger: 'change' }
+                ],
+                category: [
+                    { required: true, message: '分类为必选项，若没有可选分类，请先在分类管理中添加', trigger: 'blur' },
+                ],
+                "attribute.sex": [
+                    { required: true, message: '性别为必选项', trigger: 'change' }
+                ]
+
+            },
+            linkrules: {
+                source: [
+                    { required: true, message: '源为必选项，若没有可选项，请先添加角色', trigger: 'blur' },
+                ],
+                target: [
+                    { required: true, message: '目标为必选项，若没有可选项，请先添加角色', trigger: 'blur' },
+                ],
+                symbolnum: [
+                    { required: true, message: '关系类型是必选项', trigger: 'blur' },
+                ],
+                
+
+            },
             myArticle: ['霸道总裁爱上我', '我不爱吃饭'],
             article: '',
             temp: '',
@@ -211,6 +239,7 @@ export default {
                 source: '',
                 symbol: '',
                 name: '',
+                symbolnum:'',
                 open: false
             },
             newCategory: {
@@ -233,111 +262,71 @@ export default {
             },
             direction: 'rtl',
             drawer: false,
-            graphdata: [
-                {
-                    name: '肖霸',//name必须是唯一标识
-                    attribute: {
-                        sex: '男',
-                        description: '帅气又霸道的一中肖霸，对厚小花情有独钟',
-                        '身高': '161cm'
-                    },
-                    category: '主角',//节点分类index
-                },
-                {
-                    name: '厚小花',//name必须是唯一标识
-                    attribute: {
-                        age: 15,//节点要展示的属性
-                        num: 100,
-                        sex: '女',
-                        description: ''
-                    },
-                    category: '主角',//节点分类index
-                },
-                {
-                    name: '小莲花',
-                    attribute: {
-                        age: 15,
-                        num: 100,
-                        sex: '女',
-                        description: '女主的好朋友'
-                    },
-                    category: '同龄好友',
-                },
-            ],
-            graphcategories: [
-                {
-                    name: '主角',
-                    symbolSize: 80,//节点大小
-                    itemStyle: {
-                        color: '#E79DDE',
-                    }
-                },
-                {
-                    name: '同龄好友',
-                    symbolSize: 60,//节点大小
-                    itemStyle: {
-                        color: '#C7F3D2',
-                    }
-                },
+            graphdata: [],
+            graphcategories: [],
+            graphlink: []
 
-            ],
-            graphlink: [
-                {
-                    source: '厚小花',//起点和终点与node中name对应
-                    target: '小莲花',
-                    name: '闺蜜',//提示文字
-                    symbol: ['none', 'none']
-
-                }, {
-                    source: '厚小花',
-                    target: '肖霸',
-                    name: '情侣',
-                },
-                {
-                    source: '肖霸',
-                    target: '厚小花',
-                    name: '死敌',
-                },
-
-            ]
-
+        }
+    },
+    computed: {
+        disabled() {
+            if (this.article == '')
+                return true
+            else
+                return false
         }
     },
 
     methods: {
-        
+
         //角色操作
         addNode() {
-            this.newNode.open = false
-            var newArray = $.extend(true, [], this.newNode);
-            delete newArray.open
-            this.graphdata.push({ ...newArray })
-            this.recreateGraph()
+            this.$refs.newNode.validate((valid) => {
+                if (valid) {
+                    this.newNode.open = false
+                    var newArray = $.extend(true, [], this.newNode);
+                    delete newArray.open
+                    this.graphdata.push({ ...newArray })
+                    this.recreateGraph()
+                }
+                else {
+
+                }
+
+            })
+
         },
         //关系操作
         addLink() {
-            if (this.temp == 1) {
-                //this.newLink.symbol=["none","arrow"]
-            }
-            else {
-                this.newLink.symbol = ["none", "none"]
-            }
-            var newLink = $.extend(true, [], this.newLink)
-            delete newLink.open
-            this.graphlink.push({ ...newLink })
+            this.$refs.newLink.validate((valid) => {
+                if (valid) {
+                    if (this.newLink.symbolnum == 1) {
+                        //this.newLink.symbol=["none","arrow"]
+                    }
+                    else {
+                        this.newLink.symbol = ["none", "none"]
+                    }
+                    var newLink = $.extend(true, [], this.newLink)
+                    delete newLink.open
+                    this.graphlink.push({ ...newLink })
 
-            console.log(this.graphlink, 'graphlink')
-            this.recreateGraph()
-            this.close(this.newLink)
+                    console.log(this.graphlink, 'graphlink')
+                    this.recreateGraph()
+                    this.close(this.newLink)
+
+                }
+                else {
+                }
+            })
 
         },
         deleteLinkOrNode(type) {
             console.log(this.clickNodeIndex)
-            if(type=='link'){
-                this.graphlink.splice(this.clickNodeIndex,1)
+            if (type == 'link') {
+                this.graphlink.splice(this.clickNodeIndex, 1)
             }
-            else if(type=='node'){
-                this.graphdata.splice(this.clickNodeIndex,1)
+            else if (type == 'node') {
+                this.graphdata.splice(this.clickNodeIndex, 1)
             }
             this.recreateGraph()
             this.close(this.newLink)
@@ -357,9 +346,8 @@ export default {
 
         },
         addCategory() {
-            var newArray = $.extend(true, [], this.newCategory);
-            newArray.itemStyle.color = '#BB2121'
-            this.graphcategories.push({ ...this.newCategory })
+            this.newCategory.itemStyle.color = '#BB2121'
+            this.graphcategories.push({ ...$.extend(true, [], this.newCategory) })
             this.newCategory.name = ''
         },
         editCategory(category) {
@@ -395,6 +383,10 @@ export default {
             this.drawer = true
         },
         nameChange() {
+            if (this.node.name == '') {
+                alert('角色姓名不允许为空')
+                return
+            }
             //名字没有改变
             if (this.node.name == this.temp)
                 return
@@ -422,11 +414,30 @@ export default {
 
         //保存所有修改到数据库
         save() {
+            var data = {
+                graphdata: this.graphdata,
+                graphlink: this.graphlink,
+                graphcategories: this.graphcategories
+            }
+            saveRelationship(data).then((res) => {
+                this.$message({
+                    message: res.data.message,
+                    type: 'success'
+                });
+
+            })
 
         },
 
         chooseArticle() {
+            getRelationship({ params: { title: this.article } }).then((res) => {
+                //console.log(res.data.graphdata, 'res')
+                this.graphdata = res.data.graphdata
+                this.graphcategories = res.data.graphcategories
+                this.graphlink = res.data.graphlink
+                this.recreateGraph()
 
+            })
         },
         clear(obj) {
             for (let key in obj) {
@@ -455,18 +466,20 @@ export default {
             this.newLink = link
             this.editLink = true
             this.newLink.open = true
-            
+
             if (link.symbol.toString() == ['none', 'none'].toString())
-                this.temp = 2
+                this.newLink.symbolnum = 2
             else {
-                this.temp = 1
+                this.newLink.symbolnum = 1
             }
         },
 
         //重画图
         recreateGraph() {
+            option.series[0].data = this.graphdata
+            option.series[0].links = this.graphlink
+            option.series[0].categories = this.graphcategories
             console.log(option.series[0], '0')
-            //myChart.clear()
             myChart = echarts.init(chartDom);
             myChart.setOption(option)
 
@@ -622,8 +635,8 @@ export default {
 
 }
 
-.dialog{
-    /deep/.el-input{
+.dialog {
+    /deep/.el-input {
         width: 221px;
     }
 }
