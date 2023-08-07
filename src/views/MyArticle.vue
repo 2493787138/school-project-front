@@ -84,7 +84,7 @@
   </div>
 </template>
 <script>
-import { getArticle, addArticle, delArticle} from '../api'
+import { getArticle, addArticle, editArticle,delArticle} from '../api'
 
 export default {
   data() {
