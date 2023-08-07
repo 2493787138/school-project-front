@@ -1,25 +1,30 @@
 <template>
   <div class="manage">
-    <!-- 弹窗 -->
+    <!-- 新增作品弹窗 -->
     <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
-      <!-- 用户的表单信息 -->
+      <!-- 作品的表单信息 -->
       <el-form ref="form" inline :model="form" label-width="80px" :rules="rules">
-        <el-form-item label="姓名" prop="name">
+        <el-form-item label="作品名称" prop="article_name">
           <!-- prop与rule中字段一致用于校验 -->
-          <el-input placeholder="请输入姓名" v-model="form.name"></el-input>
+          <el-input placeholder="请输入作品名称" v-model="form.article_name"></el-input>
         </el-form-item>
-        <el-form-item label="年龄" prop="age">
-          <el-input placeholder="请输入年龄" v-model="form.age"></el-input>
+        <el-form-item v-if="form.state !== undefined"label="作品状态" prop="state">
+            <el-select placeholder="请选择作品状态" v-model="form.state">
+              <el-option label="更新中" value="0"></el-option>
+              <el-option label="已完成" value="1"></el-option>
+            </el-select>
+
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-select v-model="form.sex" placeholder="请选择">
-            <el-option label="男" :value="1"></el-option>
-            <el-option label="女" :value="0"></el-option>
+        <el-form-item label="作品标签" prop="tags">
+          <el-select placeholder="请选择标签" v-model="form.tags" multiple>
+            <el-option label="悬疑推理" value="1"></el-option>
+            <el-option label="都市情感" value="2"></el-option>
+            <el-option label="青春校园" value="3"></el-option>
+            <el-option label="古风穿越" value="4"></el-option>
+            <el-option label="恐怖惊悚" value="5"></el-option>
+            <el-option label="科幻玄幻" value="6"></el-option>
+            <el-option label="社会伦理" value="7"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="出生日期" prop="birth">
-          <el-date-picker v-model="form.birth" type="date" placeholder="选择日期" value-format="yyyy-MM-DD">
-          </el-date-picker>
         </el-form-item>
 
 
@@ -79,52 +84,37 @@
   </div>
 </template>
 <script>
-import { addUser, editUser, delUser, getArticle} from '../api'
+import { getArticle, addArticle, delArticle} from '../api'
 
 export default {
   data() {
     return {
       dialogVisible: false,
       form: {
-        name: '',
-        age: '',
-        birth: '',
-        sex: '',
-        password: '',
+        article_name: '',
+        tags: [],
+        state: '',
       },
       rules: {
-        name: [
+        article_name: [
           {
             required: true,
-            message: '请输入姓名'
+            message: '请输入作品名称'
           }
         ],
-        age: [
+        tags: [
           {
             required: true,
-            message: '请输入年龄'
-          }
-        ],
-        sex: [
-          {
-            required: true,
-            message: '请选择性别'
-          }
-        ],
-        birth: [
-          {
-            required: true,
-            message: '请选择出生日期'
-          }
-        ],
-        password: [
-          {
-
-            required: true,
-            message: '请输入密码'
+            message: '请选择标签'
           }
         ],
 
+        state: [
+          {
+            required: true,
+            message: '请选择状态'
+          }
+        ],
 
       },
       tableData: [''],
@@ -175,7 +165,6 @@ export default {
       //关闭弹窗时清空弹窗内容
       this.$refs.form.resetFields();
       this.dialogVisible = false
-
     },
     //点击确定提交表单
     submit() {
@@ -184,13 +173,14 @@ export default {
         if (valid) {
 
           if (this.modelType === 0) {
-            addUser(this.form).then(() => {
+            this.form.state = 0  //新增作品初始状态为0
+            addArticle(this.form).then(() => {
               //刷新列表数据
               this.getList()
               //console.log(this.form,'form')
             })
           } else if (this.modelType === 1) {
-            editUser(this.form).then(() => {
+            editArticle(this.form).then(() => {
               //刷新列表数据
               this.getList()
             })
@@ -204,6 +194,7 @@ export default {
     },
     handleAdd() {
       this.dialogVisible = true
+      this.form.state = undefined;
       this.modelType = 0
     },
 
@@ -212,7 +203,8 @@ export default {
       this.dialogVisible = true
       //对当前行的数据进行深拷贝
       this.form = JSON.parse(JSON.stringify(row))
-
+      this.form.state = this.stateMappings[this.form.state];
+      this.form.tags = this.form.tags.map(tag => this.tagMappings[tag]);
     },
     handleDelete(row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -220,7 +212,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delUser({id: row.id}).then(() => {
+        delArticle({id: row.id}).then(() => {
           this.$message({
             type: 'success',
             message: '删除成功!'

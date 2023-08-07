@@ -63,7 +63,15 @@ export const getLabels =()=>{
 export const getArticle =()=>{
     return http.get('/myArticle/getArticle')
 }
-
+export const addArticle = (data) =>{
+    return http.post('/myArticle/addArticle',data)
+}
+export const delArticle = (data) =>{
+    return http.delete('/myArticle/delArticle',data)
+}
+export const editArticle = (data) =>{
+    return http.patch('/myArticle/editArticle',data)
+}
 
 //Timeline
 export const saveTimeline = (data) =>{
