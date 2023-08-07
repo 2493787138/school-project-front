@@ -74,6 +74,15 @@ export const getTimeline =(data)=>{
     return http.get(`/timeline/get/`,data)
 }
 
+//Relationship
+export const getRelationship = (data) =>{
+    return http.get('/relationship/get',data)
+}
+
+export const saveRelationship = (data) =>{
+    return http.post('/relationship/save',data)
+}
+
 
 //chx
 
