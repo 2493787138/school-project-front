@@ -253,7 +253,13 @@ export default {
 
     },
     handleEdit() {
-      this.dialogVisible = true
+      // 将form对象的属性设置为当前页面的数据
+      this.form.name = this.$store.state.tab.user.username;
+      this.form.age = this.$store.state.tab.user.age;
+      this.form.sex = this.$store.state.tab.user.sex;
+      this.form.birth = this.$store.state.tab.user.birth;
+
+      this.dialogVisible = true;
     },
     handleEdit_psw() {
       this.pswdialogVisible = true
