@@ -19,10 +19,10 @@
             <el-input type="password" v-model="registerForm.password" placeholder="请输入密码"></el-input>
           </el-form-item>
           <el-form-item prop="birthdate" label="生日:">
-            <el-date-picker v-model="registerForm.birthdate" type="date" placeholder="请选择出生日期" style="width: 209px;"></el-date-picker>
+            <el-date-picker v-model="registerForm.birthdate" type="date" placeholder="请选择出生日期" style="width: 200px;"></el-date-picker>
           </el-form-item>
           <el-form-item prop="gender" label="性别:">
-            <el-radio-group v-model.number="registerForm.gender" style="width: 209px;">
+            <el-radio-group v-model.number="registerForm.gender" style="width: 200px;">
               <el-radio :label="'男'">男</el-radio>
               <el-radio :label="'女'">女</el-radio>
             </el-radio-group>
