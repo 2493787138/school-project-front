@@ -8,7 +8,7 @@
           <!-- prop与rule中字段一致用于校验 -->
           <el-input placeholder="请输入作品名称" v-model="form.article_name"></el-input>
         </el-form-item>
-        <el-form-item v-if="form.state !== undefined"label="作品状态" prop="state">
+        <el-form-item v-if="form.state !== undefined" label="作品状态" prop="state">
             <el-select placeholder="请选择作品状态" v-model="form.state">
               <el-option label="更新中" value="0"></el-option>
               <el-option label="已完成" value="1"></el-option>

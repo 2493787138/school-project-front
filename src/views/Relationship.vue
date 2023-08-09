@@ -8,7 +8,7 @@
                 </el-option>
             </el-select>
             <el-button @click="newNode.open = true" type="primary" class="addNode" :disabled="disabled">添加角色</el-button>
-            <el-button @click="newLink.open = true" type="primary" class="addNode" :disabled="disabled">添加关系</el-button>
+            <el-button @click="newLink.open=true" type="primary" class="addNode" :disabled="disabled">添加关系</el-button>
             <!-- 类别管理 -->
             <el-popover placement="right" width="450" trigger="click" style="position: relative;"
                 @after-leave="recreateGraph">
@@ -142,9 +142,9 @@
                 <el-form-item label="名称" prop="name">
                     <el-input v-model="newLink.name"></el-input>
                 </el-form-item>
-                <el-form-item label="关系类型:" prop="symbolnum">
-                    <el-select v-model="newLink.symbolnum">
-                        <el-option v-for="item in linkOption" :key="item.value" :label="item.line" :value="item.value">
+                <el-form-item label="关系类型:" prop="symbol">
+                    <el-select v-model="newLink.symbol">
+                        <el-option v-for="item in linkOption" :key="item.line" :label="item.line" :value="item.value">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -213,11 +213,11 @@ export default {
             temp: '',
             linkOption: [
                 {
-                    value: 1,
+                    value: ['none','arrow'],
                     line: '—————————▶'
                 },
                 {
-                    value: 2,
+                    value: ['none','none'],
                     line: '——————————'
                 }
             ],
@@ -239,7 +239,6 @@ export default {
                 source: '',
                 symbol: '',
                 name: '',
-                symbolnum:'',
                 open: false
             },
             newCategory: {
@@ -297,20 +296,29 @@ export default {
 
         },
         //关系操作
+        
         addLink() {
+            
             this.$refs.newLink.validate((valid) => {
-                if (valid) {
-                    if (this.newLink.symbolnum == 1) {
-                        //this.newLink.symbol=["none","arrow"]
-                    }
-                    else {
-                        this.newLink.symbol = ["none", "none"]
-                    }
+                if (valid&&!this.editLink) {
+                    console.log("新增")
+                    
                     var newLink = $.extend(true, [], this.newLink)
+                    console.log(newLink,'hi')
                     delete newLink.open
                     this.graphlink.push({ ...newLink })
 
-                    console.log(this.graphlink, 'graphlink')
+                    //console.log(this.graphlink, 'graphlink')
+                    this.recreateGraph()
+                    this.close(this.newLink)
+
+                }
+                else if(valid&&this.editLink) {
+                    console.log("编辑")
+                    var newLink = $.extend(true, [], this.newLink)
+                    delete newLink.open
+                    this.graphlink[this.clickNodeIndex]={ ...newLink }
+                    //console.log(this.graphlink, 'graphlink')
                     this.recreateGraph()
                     this.close(this.newLink)
 
@@ -321,7 +329,7 @@ export default {
 
         },
         deleteLinkOrNode(type) {
-            console.log(this.clickNodeIndex)
+            //console.log(this.clickNodeIndex)
             if (type == 'link') {
                 this.graphlink.splice(this.clickNodeIndex, 1)
             }
@@ -331,6 +339,7 @@ export default {
             this.recreateGraph()
             this.close(this.newLink)
         },
+        
 
         //类别操作
         deleteCategory(category) {
@@ -342,7 +351,7 @@ export default {
             }
             let index = this.graphcategories.findIndex(element => element.name == category)
             this.graphcategories.splice(index, 1)
-            console.log(this.graphcategories)
+            //console.log(this.graphcategories)
 
         },
         addCategory() {
@@ -362,8 +371,8 @@ export default {
                     element.category = category
                 }
             });
-            console.log(this.graphdata)
-            console.log(this.graphcategories)
+            //console.log(this.graphdata)
+            //console.log(this.graphcategories)
         },
         //属性操作
         addAttribute() {
@@ -460,12 +469,16 @@ export default {
             this.drawer = true
             this.node = node
             this.temp = node.name
-            console.log(this.temp, 'temp')
+            //console.log(this.temp, 'temp')
         },
         clickLink(link) {
-            this.newLink = link
+            
+            this.newLink = {
+                ...link,
+                open:false
+            }
             this.editLink = true
-            this.newLink.open = true
+            this.newLink.open=true
 
             if (link.symbol.toString() == ['none', 'none'].toString())
                 this.newLink.symbolnum = 2
@@ -479,7 +492,7 @@ export default {
             option.series[0].data = this.graphdata
             option.series[0].links = this.graphlink
             option.series[0].categories = this.graphcategories
-            console.log(option.series[0], '0')
+            //console.log(option.series[0], '0')
             myChart = echarts.init(chartDom);
             myChart.setOption(option)
 
@@ -502,7 +515,7 @@ export default {
                 clicknode(option.series[0].data[params.dataIndex])
             }
             else {
-                console.log(params.data)
+                //console.log(params.data)
                 clicklink(option.series[0].links[params.dataIndex])
             }
         });
