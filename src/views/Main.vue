@@ -26,7 +26,8 @@ import { RouterView } from 'vue-router';
 import CommonAside from '@/components/CommonAside.vue';
 import CommonHeader from '@/components/CommonHeader.vue';
 import CommonTag from '@/components/CommonTag.vue';
-
+import store from '@/store';
+store.commit('refreshUser')
 
 export default{
     data() {
@@ -38,7 +39,8 @@ export default{
     CommonTag,
     RouterView,
     CommonTag
-}
+    },
+
 }
 </script>
 <style>
