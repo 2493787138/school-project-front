@@ -3,7 +3,7 @@ import ManagerHomeApi from './mockServeData/managerHome';
 import userApi from './mockServeData/user';
 import myArticleApi from './mockServeData/myArticle'
 import graphApi from './mockServeData/graph';
-import relationship from './mockServeData/relationship';
+
 
 //定义mock请求拦截
 //路径与index引入的路径相同，相当于给方法定义一个操作路径让index调用
