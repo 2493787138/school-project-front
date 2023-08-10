@@ -1,4 +1,5 @@
 import Mock from 'mockjs'
+import user from './user'
 function param2Obj(url) {
     const search = url.split('?')[1]
     if (!search) {
@@ -15,14 +16,27 @@ function param2Obj(url) {
 }
 
 export default {
-    save: (data) => {
-        //console.log(data,'save')
-        return true
+    //根据用户名返回他所有的文章名
+    getArticleName: (req) => {
+        console.log(req,'name')
+        const { username}=param2Obj(req.url)
+        console.log(username)
+        return {
+            ArticleName:['霸道总裁爱上我','穿越成一只猪']
+
+        }
     },
 
+    //删除表里所有关于该用户该文章的记录，并保存发送过来的记录，如果tale是timeline就是对时间线表的操作，是relationship就是对角色关系表的操作
+    save: (data) => {  
+        console.log(data,'save')
+        return true
+    },
+    
+    //拿到表所有关于该用户该文章的记录,如果tale是timeline就是对时间线表的操作，是relationship就是对角色关系表的操作
     get: (config) => {
-        const { title } = param2Obj(config.url)
-        console.log(title)//取到的文章名字信息
+        const { title,username,table } = param2Obj(config.url)
+        console.log(title,username,table)
         if(title=='霸道总裁爱上我'){
             return {
             data: [

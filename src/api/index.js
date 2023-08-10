@@ -73,23 +73,19 @@ export const editArticle = (data) =>{
     return http.patch('/myArticle/editArticle',data)
 }
 
-//Timeline
-export const saveTimeline = (data) =>{
-    return http.post('/timeline/save',data)
+//Graph
+export const getArticleName =(data)=>{
+    return http.get('/graph/getArticleName',data)
+}
+export const save = (data) =>{
+    return http.post('/graph/save',data)
 }
 
-export const getTimeline =(data)=>{
-    return http.get(`/timeline/get/`,data)
+export const get =(data)=>{
+    return http.get(`/graph/get/`,data)
 }
 
-//Relationship
-export const getRelationship = (data) =>{
-    return http.get('/relationship/get',data)
-}
 
-export const saveRelationship = (data) =>{
-    return http.post('/relationship/save',data)
-}
 
 
 //chx

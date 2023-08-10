@@ -22,7 +22,7 @@
 <script>
 import gantt from 'dhtmlx-gantt'
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
-import { saveTimeline, getTimeline } from '@/api/index'
+import { get, save,getArticleName } from '@/api/index'
 
 var that
 gantt.plugins({
@@ -131,12 +131,13 @@ export default {
           type: 'success'
         })
       }
-      else {
+      else if(this.saveMessage!=''){
         this.$message({
           message: this.saveMessage,
           type: 'error'
         })
       }
+      this.saveMessage=''
     }
   },
   methods: {
@@ -148,7 +149,7 @@ export default {
 
     //将当前数据传给后端保存
     save() {
-      const tasks = []
+      var tasks = []
       if (this.tasks.data.length != 0) {
         tasks = this.tasks.data.map(item => {
           return {
@@ -163,11 +164,14 @@ export default {
         })
       }
       const data = {
+        username:this.$store.state.tab.user.username,
+        article:this.article,
+        table:'timeline',
         tasks: tasks,
         links: this.tasks.links
       }
       //console.log(data)
-      saveTimeline(data).then((res) => {
+      save(data).then((res) => {
         if (res.data === true) {
           this.saveMessage = "保存成功"
         }
@@ -181,7 +185,7 @@ export default {
     chooseArticle() {
       this.task=''
       //console.log(this.article)
-      getTimeline({ params: { title: this.article } }).then((res) => {
+      get({ params: { title: this.article,username:this.$store.state.tab.user.username,table:'timeline'} }).then((res) => {
         this.tasks = res.data
         
         //根据新数据重绘
@@ -236,7 +240,15 @@ export default {
 
   },
   mounted() {
+    //console.log(this.$store.state.tab.user,'user' )
+    getArticleName({ params: {username:this.$store.state.tab.user.username} }).then((res) => {
+        console.log(res)
+        this.myArticle=res.data.ArticleName
+      })
+    
     that = this
+
+
     gantt.i18n.setLocale('cn'); //设置中文
     //左侧栏配置
     gantt.config.columns = [
@@ -272,9 +284,9 @@ export default {
     gantt.locale.labels.section_text = "事件名称";
 
     //初始化
-    gantt.init(this.$refs.gantt)
+    //gantt.init(this.$refs.gantt)
     // 数据解析
-    gantt.parse(this.tasks)
+    //gantt.parse(this.tasks)
 
 
 

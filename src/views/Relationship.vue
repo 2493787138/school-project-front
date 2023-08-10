@@ -8,7 +8,7 @@
                 </el-option>
             </el-select>
             <el-button @click="newNode.open = true" type="primary" class="addNode" :disabled="disabled">添加角色</el-button>
-            <el-button @click="newLink.open=true" type="primary" class="addNode" :disabled="disabled">添加关系</el-button>
+            <el-button @click="newLink.open = true" type="primary" class="addNode" :disabled="disabled">添加关系</el-button>
             <!-- 类别管理 -->
             <el-popover placement="right" width="450" trigger="click" style="position: relative;"
                 @after-leave="recreateGraph">
@@ -170,7 +170,7 @@
 import * as jquery from 'jquery';
 import $ from 'jquery'
 import * as echarts from 'echarts';
-import { getRelationship, saveRelationship } from '@/api'
+import { get, save,getArticleName } from '@/api'
 var that
 var chartDom;
 var myChart;
@@ -202,10 +202,10 @@ export default {
                 target: [
                     { required: true, message: '目标为必选项，若没有可选项，请先添加角色', trigger: 'blur' },
                 ],
-                symbolnum: [
+                symbol: [
                     { required: true, message: '关系类型是必选项', trigger: 'blur' },
                 ],
-                
+
 
             },
             myArticle: ['霸道总裁爱上我', '我不爱吃饭'],
@@ -213,11 +213,11 @@ export default {
             temp: '',
             linkOption: [
                 {
-                    value: ['none','arrow'],
+                    value: ['none', 'arrow'],
                     line: '—————————▶'
                 },
                 {
-                    value: ['none','none'],
+                    value: ['none', 'none'],
                     line: '——————————'
                 }
             ],
@@ -296,28 +296,28 @@ export default {
 
         },
         //关系操作
-        
+
         addLink() {
-            
+
             this.$refs.newLink.validate((valid) => {
-                if (valid&&!this.editLink) {
+                if (valid && !this.editLink) {
                     console.log("新增")
-                    
+
                     var newLink = $.extend(true, [], this.newLink)
-                    console.log(newLink,'hi')
+                    console.log(newLink, 'hi')
                     delete newLink.open
                     this.graphlink.push({ ...newLink })
 
-                    //console.log(this.graphlink, 'graphlink')
+                    console.log(this.graphlink, 'graphlink')
                     this.recreateGraph()
                     this.close(this.newLink)
 
                 }
-                else if(valid&&this.editLink) {
+                else if (valid && this.editLink) {
                     console.log("编辑")
                     var newLink = $.extend(true, [], this.newLink)
                     delete newLink.open
-                    this.graphlink[this.clickNodeIndex]={ ...newLink }
+                    this.graphlink[this.clickNodeIndex] = { ...newLink }
                     //console.log(this.graphlink, 'graphlink')
                     this.recreateGraph()
                     this.close(this.newLink)
@@ -339,7 +339,7 @@ export default {
             this.recreateGraph()
             this.close(this.newLink)
         },
-        
+
 
         //类别操作
         deleteCategory(category) {
@@ -424,11 +424,14 @@ export default {
         //保存所有修改到数据库
         save() {
             var data = {
+                username:this.$store.state.tab.user.username,
+                article:this.article,
+                table:'relationship',
                 graphdata: this.graphdata,
                 graphlink: this.graphlink,
                 graphcategories: this.graphcategories
             }
-            saveRelationship(data).then((res) => {
+            save(data).then((res) => {
                 this.$message({
                     message: res.data.message,
                     type: 'success'
@@ -439,7 +442,7 @@ export default {
         },
 
         chooseArticle() {
-            getRelationship({ params: { title: this.article } }).then((res) => {
+            get({ params: { title: this.article,username:this.$store.state.tab.user.username,table:'relationship' } }).then((res) => {
                 //console.log(res.data.graphdata, 'res')
                 this.graphdata = res.data.graphdata
                 this.graphcategories = res.data.graphcategories
@@ -472,19 +475,19 @@ export default {
             //console.log(this.temp, 'temp')
         },
         clickLink(link) {
-            
+
             this.newLink = {
-                ...link,
-                open:false
+                ...$.extend(true, [], link),
+                open: false
             }
             this.editLink = true
-            this.newLink.open=true
+            this.newLink.open = true
 
-            if (link.symbol.toString() == ['none', 'none'].toString())
-                this.newLink.symbolnum = 2
-            else {
-                this.newLink.symbolnum = 1
-            }
+            // if (link.symbol.toString() == ['none', 'none'].toString())
+            //     this.newLink.symbolnum = 2
+            // else {
+            //     this.newLink.symbolnum = 1
+            // }
         },
 
         //重画图
@@ -506,6 +509,10 @@ export default {
         chartDom = this.$refs.graph;
         chartDom.setAttribute('_echarts_instance_', '')
         myChart = echarts.init(chartDom);
+        getArticleName({ params: { username: this.$store.state.tab.user.username } }).then((res) => {
+            console.log(res)
+            this.myArticle = res.data.ArticleName
+        })
 
 
         //点击事件

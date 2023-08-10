@@ -2,7 +2,7 @@ import Mock from 'mockjs'
 import ManagerHomeApi from './mockServeData/managerHome';
 import userApi from './mockServeData/user';
 import myArticleApi from './mockServeData/myArticle'
-import timelineApi from './mockServeData/timeline';
+import graphApi from './mockServeData/graph';
 import relationship from './mockServeData/relationship';
 
 //定义mock请求拦截
@@ -21,10 +21,8 @@ Mock.mock('/api/user/edit','patch',userApi.updateUser)
 Mock.mock('/api/user/del','delete',userApi.deleteUser)
 Mock.mock(/api\/user\/getUser/,'get',userApi.getUserList)
 
-//Mock.mock('/api/user/',userApi.batchremove)
 
-Mock.mock('/api/timeline/save','post',timelineApi.save)
-Mock.mock(/api\/timeline\/get/,'get',timelineApi.get)
+Mock.mock(/api\/graph\/getArticleName/,'get',graphApi.getArticleName)
+Mock.mock('/api/graph/save','post',graphApi.save)
+Mock.mock(/api\/graph\/get/,'get',graphApi.get)
 
-Mock.mock('/api/relationship/save','post',relationship.save)
-Mock.mock(/api\/relationship\/get/,'get',relationship.get)

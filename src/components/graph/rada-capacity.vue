@@ -87,8 +87,8 @@ export default {
                         max: maxValue
                     })
                 });
-                console.log(option.radar.indicator, 'indicator')
-                console.log(option.series[0].data, 'data')
+                //console.log(option.radar.indicator, 'indicator')
+                //console.log(option.series[0].data, 'data')
             }
             else {
                 data.data.forEach(element => {
