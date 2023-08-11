@@ -45,6 +45,7 @@ export default {
         },
         //防止刷新时vuex数据丢失
         refreshUser(state){
+            if(jsCookie.get('token'))
             state.user=JSON.parse(jsCookie.get('token'))
 
         },
