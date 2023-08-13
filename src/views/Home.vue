@@ -65,8 +65,8 @@
           <hr>
           <div class="login-info">
             <p>上次登录时间: <span>2023/6/11</span></p>
-            <p>性别：<span>{{ $store.state.tab.user.sex }}</span></p>
-            <p>出生日期：<span>{{ $store.state.tab.user.birth }}</span></p>
+            <p>性别：<span>{{ $store.state.tab.user.gender }}</span></p>
+            <p>出生日期：<span>{{ $store.state.tab.user.birthdate }}</span></p>
             <p>作品数：</p>
             <el-button type="primary" class="button" @click="handleEdit">
               编辑资料

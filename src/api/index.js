@@ -85,10 +85,10 @@ export const get =(data)=>{
     return http.get(`/graph/get/`,data)
 }
 
+//Words
+export const getWords =(data)=>{
+    return http.get(`https://www.fastmock.site/mock/59566ba52106b26bff2af849ca5255ce/api/test`,data)
+    //return http.get(`https://apis.tianapi.com/similarwords/index`,data)
+}
 
 
-
-//chx
-
-
-//

@@ -115,6 +115,27 @@ export default {
                                 url: 'Timeline.vue',
                               }
                             ]
+                        },
+                        {
+                            label: '写作工具',
+                            icon: 'edit',
+                            children: [
+                              {
+                                path: '/sentence',
+                                name: 'sentence',
+                                label: '名人名句',
+                                icon: 'chat-dot-square',
+                                url: 'Sentence.vue'
+                              },
+                              {
+                                path: '/words',
+                                name: 'words',
+                                label: '相关词',
+                                icon: 's-release',
+                                url: 'Words.vue'
+                              },
+                              
+                            ]
                           }
                         
                       ]
