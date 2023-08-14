@@ -444,6 +444,7 @@ export default {
         chooseArticle() {
             get({ params: { title: this.article,username:this.$store.state.tab.user.username,table:'relationship' } }).then((res) => {
                 //console.log(res.data.graphdata, 'res')
+                console.log(res.data.graphcategories)
                 this.graphdata = res.data.graphdata
                 this.graphcategories = res.data.graphcategories
                 this.graphlink = res.data.graphlink
@@ -530,7 +531,7 @@ export default {
         option = {
             // 图的标题
             title: {
-                text: 'ECharts 关系图'
+                
             },
             // 提示框的配置
             tooltip: {
@@ -560,18 +561,24 @@ export default {
                     mark: {
                         show: true
                     },
-                    // 还原
-                    restore: {
+                
+                    myTool1: {
                         show: true,
-                        click: () => {
+                        title: "刷新",
+                        icon:
+                            "path://M512 981.333333c-209.866667 0-396.693333-126.026667-466.293333-314.08a35.52 35.52 0 0 1 23.626666-44.426666 38.613333 38.613333 0 0 1 48 20.693333c58.666667 158.933333 217.013333 265.493333 394.666667 265.6s336-106.666667 394.666667-266.133333a37.6 37.6 0 0 1 28.853333-23.626667 38.986667 38.986667 0 0 1 35.786667 11.946667 34.773333 34.773333 0 0 1 7.146666 35.36c-69.386667 188.373333-256.48 314.666667-466.453333 314.666666z m431.36-574.08a37.92 37.92 0 0 1-35.946667-24.266666C849.386667 222.56 690.613333 114.88 512 114.72S174.72 222.346667 116.746667 382.773333A38.72 38.72 0 0 1 69.333333 403.733333a35.786667 35.786667 0 0 1-24.106666-44.373333C113.333333 169.866667 301.013333 42.666667 512 42.666667s398.666667 127.306667 467.146667 316.96a34.56 34.56 0 0 1-4.906667 32.64 38.933333 38.933333 0 0 1-30.88 14.986666z",
+                        onclick: () => {
                             console.log('刷新了')
-
-
+                            that.recreateGraph()
+ 
                         },
                     },
+
+
                     // 保存为图片
                     saveAsImage: {
-                        show: true
+                        show: true,
+                        title:'下载'
                     }
                 }
             },

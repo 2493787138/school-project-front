@@ -15,7 +15,6 @@
 
 
     </div>
-    <div>{{ $store.state.tab.user }}</div>
     <div ref="gantt" class="left-container"></div>
 
   </div>
