@@ -8,7 +8,9 @@ import router from './router'
 import store from './store';
 import './api/mock'
 import Vue from 'vue';
+
 import Cookie from 'js-cookie';
+
 import {
   Pagination,
   Dialog,
@@ -90,7 +92,9 @@ import {
   Drawer,
 } from 'element-ui';
 
+
 Vue.config.devtools = true;
+
 Vue.use(Pagination);
 Vue.use(Dialog);
 Vue.use(Autocomplete);
@@ -203,7 +207,7 @@ router.beforeEach((to, from, next) => {
 })
 
 new Vue({
-
+  
   router,
   Cookie,
   store,

@@ -1,12 +1,13 @@
 <template>
     <div class="container">
+        <h1>灵感关键词</h1>
         <el-input placeholder="请输要搜索的词汇" v-model="search" class="input-with-select">
             <el-button slot="append" icon="el-icon-search" @click="handleClick"></el-button>
         </el-input>
         <!-- <h3>{{ words }}</h3> -->
         <div ref="wordcloud" class="wordcloud">
             <wordcloud class="cloud" :data="words" nameKey="name" valueKey="value" v-if="words[0]" 
-            :rotate="rotate" :fontSize="fontSize" wordPadding=5 :margin="margin" :showTooltip="showTooltip">
+            :rotate="rotate" :fontSize="fontSize" wordPadding=8 :margin="margin" :showTooltip="showTooltip">
             </wordcloud>
 
 
@@ -75,12 +76,22 @@ export default {
 </script>
 <style lang="less" scoped>
 .container {
-    height: 99%;
+    height: 90%;
     width: 100%;
+
+    h1{
+        font-size: 40px;
+        height: 10%;
+        width: 100%;
+        line-height: 250%;
+        text-align: center;
+        color: rgb(72,74 ,75);
+    }
 
     .el-input-group {
         margin-top: 25px;
-        width: 98%;
+        margin-left:20% ;
+        width: 60%;
         margin-right: 25px;
     }
 
@@ -89,8 +100,8 @@ export default {
     }
 
     .wordcloud {
-        height: 85%;
-        margin-top: 25px;
+        height: 60%;
+        margin-top: 65px;
         width: 98%;
         margin-right: 25px;
         .cloud{

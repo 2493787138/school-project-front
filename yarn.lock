@@ -6440,6 +6440,11 @@
   "resolved" "https://registry.npmmirror.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz"
   "version" "2.3.4"
 
+"vue-iframe@^0.0.0":
+  "integrity" "sha512-gH791EBUqJrsa5SuGhxeujyK4NFngJnuvpSJN0p5W5VoHmYkW35ZekOLlCZTN658VsXUYNGCPHlk9bzLtRyd7Q=="
+  "resolved" "https://registry.npmjs.org/vue-iframe/-/vue-iframe-0.0.0.tgz"
+  "version" "0.0.0"
+
 "vue-loader@^17.0.0":
   "integrity" "sha512-AxCiJ2aPPwJC5CWtsQH3d5WSw67v55oLFHBmzrc5kjSr6i1dn5uoj5QsuokApirvWBCegRmfnE/MYFyhKMUwxw=="
   "resolved" "https://registry.npmmirror.com/vue-loader/-/vue-loader-17.1.2.tgz"
